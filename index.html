@@ -177,8 +177,7 @@
             width: 100%;
             max-width: 430px;
             margin-inline: auto;
-            min-height: 500px; 
-            overflow: hidden; 
+
         }
         .screen {
             position: absolute; 
@@ -312,6 +311,16 @@
         .choices .choice { pointer-events:auto; }
 
 
+        #timerBox {
+            animation: pulse 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+
     </style>
 </head>
 <body>
@@ -365,10 +374,30 @@
                 <section id="quiz-screen" class="screen" data-index="1" aria-live="polite">
                     <div class="card p-16">
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-                            <div id="quizStatusChip" class="chip">Savol <span id="qIndex">1</span>/<span id="qTotal">20</span></div>
-                            <div class="chip" style="background:rgba(239,68,68,.14)">Xato: <span id="mistakes">0</span> / 3</div>
+
+                            <div id="quizStatusChip" class="chip">
+                                Savol <span id="qIndex">1</span>/<span id="qTotal">20</span>
+                            </div>
+
+                            <!-- ✅ Yangi TIMER CHIP qo‘shildi -->
+                            <div class="chip" id="timerBox" style="background:rgba(42,111,255,.14); display:flex; align-items:center; gap:6px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M12 6v6l4 2"/>
+                                </svg>
+                                <span id="timer">30:00</span>
+                            </div>
+                            <!-- ✅ Timer chip tugadi -->
+
+                            <div class="chip" style="background:rgba(239,68,68,.14)">
+                                Xato: <span id="mistakes">0</span> / 3
+                            </div>
+
                         </div>
-                        <div class="progress" style="margin-top:10px; height:10px; background:rgba(255,255,255,.14); border:1px solid var(--glass-border); border-radius:999px; overflow:hidden"><span id="bar" style="display:block;height:100%;width:0%;background:linear-gradient(90deg,#2a6fff,#0b2a6f);transition:width .4s ease"></span></div>
+
+                        <div class="progress" style="margin-top:10px; height:10px; background:rgba(255,255,255,.14); border:1px solid var(--glass-border); border-radius:999px; overflow:hidden">
+                            <span id="bar" style="display:block;height:100%;width:0%;background:linear-gradient(90deg,#2a6fff,#0b2a6f);transition:width .4s ease"></span>
+                        </div>
                     </div>
 
                     <div class="card p-24" style="margin-top:10px">
@@ -378,10 +407,16 @@
                     </div>
                     
                     <div class="footerBar" style="position:sticky;bottom:0;z-index:20;margin:10px auto 0;display:flex;gap:10px;align-items:center;justify-content:space-between;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:var(--card);border:1px solid var(--glass-border);border-radius:16px;padding:10px 12px;box-shadow: var(--shadow)">
-                        <button id="restartMid" class="btn btn-ghost"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg> Qayta boshlash</button>
+                        <button id="restartMid" class="btn btn-ghost">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>
+                            </svg>
+                            Qayta boshlash
+                        </button>
                         <div class="muted" style="font-size:12px">Tanlang va avtomatik o'ting</div>
                     </div>
                 </section>
+
 
                 <section id="finish-screen" class="screen" data-index="2">
                     <div class="card p-24">
@@ -405,6 +440,7 @@
                         <div id="reviewList" style="display:grid;gap:10px"></div>
                     </div>
                 </section>
+
                 
                 <section id="account-screen" class="screen" data-index="3">
                     <h1 class="title-lg" style="font-size:24px">👤 Mening Hisobim</h1>
@@ -419,67 +455,319 @@
                 </section>
                 
                 <section id="study-screen" class="screen" data-index="4">
-                    <h1 class="title-lg" style="font-size:24px">📚 Yo'l Belgilari va Qoidalar</h1>
-                    <p class="muted" style="margin-bottom:20px; font-size:14px">Rasmiy O'zbekiston yo'l harakati qoidalari asosida asosiy kategoriyalar bo'yicha qisqacha ma'lumot:</p>
+                    <h1 class="title-lg" style="font-size:24px">📚 Yo'l Belgilari va Qoidalar (Super Qisqa Yodlash Usuli)</h1>
+                    <p class="muted" style="margin-bottom:20px; font-size:14px">
+                        Quyidagi izohlar imtihonda ko‘p beriladigan savollarga asoslangan. Qoidalarning mazmunini tushunish — 50% muvaffaqiyat!
+                    </p>
 
+                    <!-- 1. Taqiqlovchi belgilar -->
                     <div class="study-section">
-                        <h3 style="color:var(--danger)">🔴 Ta'qiqlovchi Belgilar (Doiralar)</h3>
-                        <p class="muted">Ular har qanday harakatni, manevrni yoki tezlikni **cheklaydi yoki butunlay taqiqlaydi**. Ko'pincha qizil qirrali oq doiralar shaklida bo'ladi.</p>
+                        <h3 style="color:var(--danger)">🔴 Ta'qiqlovchi Belgilar — “QILMA!” belgilar</h3>
+                        <p class="muted">Ko‘pincha <b>qizil doira</b>. Agar doira bo‘lsa — demak cheklov yoki taqiq.</p>
                         <ul>
-                            <li>**"Kirish Taqiqlangan" (3.1):** Belgining oldidan har qanday transport vositasining kirishi taqiqlanadi (faqat marshrut transportiga ruxsat).</li>
-                            <li>**"Harakat Taqiqlangan" (3.2):** Barcha transport vositalarining harakati taqiqlanadi (faqaat ayrim imtiyozli guruhlar bundan mustasno).</li>
-                            <li>**"To'xtash Taqiqlangan" (3.28) / "Turish Taqiqlangan" (3.27):** Qizil chiziqli ko'k doira (to'xtash) va ikki qizil chiziqli X ko'rinishida (turish) belgilanish joylarida to'xtash yoki turishni taqiqlaydi.</li>
-                            <li>**Tezlikni Cheklash (3.24):** Doiraning ichidagi raqam ko'rsatilgan tezlikdan yuqori harakatlanishni taqiqlaydi.</li>
+                            <li><b>🚫 Kirish Taqiqlangan (3.1)</b> — Oq doira ichida <b>qizil gorizontal chiziq</b>. Faqat maxsus transport (masalan favqulodda) kirishi mumkin.</li>
+                            <li><b>⛔ Harakat taqiqlangan</b> — Umuman mashina kirishiga ruxsat YO‘Q.</li>
+                            <li><b>🅿 To‘xtash/Turish taqiqlangan</b> — <u>Bir chiziq = to‘xtash mumkin emas</u>, <u>Ikki chiziq = umuman turib bo‘lmaydi</u>.</li>
+                            <li><b>🚷 Piyodalar taqiqlangan</b> — Faqat transport harakatlanadi.</li>
+                            <li><b>60</b> — Demak “60 dan yuqori bo‘lma”. Tezlik chegarasi belgisi har doim shu joydan boshlanadi.</li>
+                        </ul>
+                        ✅ Qoidaga “bir jumla bilan”:  
+                        <b>QIZIL DOIRA = TAQIQLASH yoki CHEKLASH!</b>
+                    </div>
+
+                    <!-- 2. Ogohlantiruvchi belgilar -->
+                    <div class="study-section">
+                        <h3 style="color:var(--warning)">⚠️ Ogohlantiruvchi Belgilar — “EHTIYOT BO‘L!”</h3>
+                        <p class="muted">Uchburchak va qizil ramkali bo‘ladi. Haydovchini oldinda xavf borligi haqida ogohlantiradi.</p>
+                        <ul>
+                            <li><b>🚸 Piyodalar o‘tish joyi</b> — To‘xtashga tayyor turing, piyoda ustun.</li>
+                            <li><b>🐄 Yovvoyi hayvonlar</b> — Tezlikni tushiring, to‘satdan chiqishi mumkin.</li>
+                            <li><b>🌀 Tik burilish</b> — Rulni tayyor tuting, tezlikni moslang.</li>
+                            <li><b>⬇ Tik tushish</b> — Tormoz qizib ketishi mumkin, past tezlik + past uzatma.</li>
+                        </ul>
+                        ✅ Esda qolarli:
+                        <b>UCHBURCHAK = OG‘OH BO‘L!</b>
+                    </div>
+
+                    <!-- 3. Imtiyoz belgilar -->
+                    <div class="study-section">
+                        <h3 style="color:var(--success)">✅ Imtiyoz (Ustuvorlik) Belgilari — “KIMGA YO‘L BERAMAN?”</h3>
+                        <p class="muted">Asosan oq-sariq romb yoki teskari uchburchak. Boschqa mashinaga yo‘l berish yoki ustuvorlikni bildiradi.</p>
+                        <ul>
+                            <li><b>🔶 ASOSIY YO‘L</b> — Romb belgisi. Demak siz ustuvorsiz.</li>
+                            <li><b>🔻 YO‘L BER</b> — Teskari uchburchak. To‘liq to‘xtamaslik mumkin, lekin yo‘l berish shart.</li>
+                            <li><b>🛑 STOP</b> — Albatta to‘liq to‘xtash!</li>
+                            <li><b>🔄 Aylanma harakat</b> — Ichkarida yurgan mashina ustun.</li>
+                        </ul>
+                        ✅ Yodlash:
+                        <b>ROMB → USTUN</b>  
+                        <b>TESKARI UCHBURCHAK → YO‘L BER</b>
+                    </div>
+
+                    <!-- 4. Axborot belgilar -->
+                    <div class="study-section">
+                        <h3 style="color:var(--ring)">🔵 Axborot Belgilar — “Qayerdaman? Nima bor?”</h3>
+                        <p class="muted">Ko‘pincha KO‘K kvadrat. Bu belgilar yo‘l sharoiti, xizmatlar yoki yo‘nalishni ko‘rsatadi.</p>
+                        <ul>
+                            <li><b>🅿 Parking</b> — Ruxsat etilgan to‘xtash joyi.</li>
+                            <li><b>⛽ Yoqilg‘i shoxobchasi</b> — Oldinda benzin/ gaz bor.</li>
+                            <li><b>🏥 Kasalxona</b> — Ovoz signalidan foydalanmang!</li>
+                            <li><b>ℹ Axborot punkt</b> — Yo‘lovchilar uchun ma’lumot.</li>
                         </ul>
                     </div>
 
+                    <!-- 5. Qoidalar bo‘yicha mini-maslahatlar -->
                     <div class="study-section">
-                        <h3 style="color:var(--warning)">⚠️ Ogohlantiruvchi Belgilar (Uchburchaklar)</h3>
-                        <p class="muted">Haydovchini oldinda joylashgan **xavfli yo'l qismlariga** yaqinlashishidan ogohlantiradi va tezlikni pasaytirishni talab qiladi. Qizil qirrali oq/sariq uchburchak shaklida bo'ladi.</p>
+                        <h3 style="color:var(--brand)">💡 Eng Ko‘p Xato Qilinadigan Qoidalar</h3>
                         <ul>
-                            <li>**Xavfli Burilishlar (1.11, 1.12):** Oldinda o'tkir yoki ko'rinishi cheklangan burilishlar borligini bildiradi.</li>
-                            <li>**Nishablik (1.13, 1.14):** Tik ko'tarilish yoki tushish borligini ko'rsatadi, bu esa tormoz yo'lini va haydash uslubini o'zgartirishni talab qiladi.</li>
-                            <li>**Yovvoyi Hayvonlar (1.27):** Bu hududda yovvoyi hayvonlar yo'lga chiqishi mumkinligidan ogohlantiradi.</li>
-                            <li>**Piyodalar O'tish Joyi (1.22):** Tartibga solinmagan piyodalar o'tish joyi borligi haqida xabar beradi.</li>
+                            <li><b>✅ Piyodalar o‘tish joyida har doim piyoda ustun.</b></li>
+                            <li><b>✅ STOP belgisida to‘liq to‘xtash shart, hatto yo‘l bo‘sh bo‘lsa ham.</b></li>
+                            <li><b>✅ Qizil chiroq yonib miltillasa — to‘xtab, xavfsiz bo‘lsa o‘tish mumkin.</b></li>
+                            <li><b>✅ Uzluksiz chiziqni kesib o‘tish taqiqlangan (jarima + xavf!).</b></li>
+                            <li><b>✅ Aylanmada — ichkarida yurgan mashina ustun.</b></li>
                         </ul>
                     </div>
-                    
+
+                    <!-- 6. Hayotiy misollar -->
                     <div class="study-section">
-                        <h3 style="color:var(--success)">✅ Imtiyoz Belgilari (Asosiy / Yo'l berish)</h3>
-                        <p class="muted">Ular chorrahalardan o'tish tartibini belgilaydi va yo'lda ustuvorlik huquqini beradi yoki bekor qiladi.</p>
+                        <h3 style="color:var(--danger)">🧠 Hayotiy Vaziyatlar</h3>
                         <ul>
-                            <li>**Asosiy yo'l (2.1):** Romb shaklida bo'lib, haydovchiga ustuvorlik huquqini beradi.</li>
-                            <li>**Yo'l bering (2.4):** Teskari uchburchak shaklida bo'lib, chorrahaga kirishdan oldin boshqa transportga yo'l berishni talab qiladi.</li>
-                            <li>**To'xtamasdan Harakatlanish Taqiqlangan (2.5):** Odatda temir yo'l kesishmasi oldida bo'lib, doimiy to'xtashni talab qiladi.</li>
+                            <li><b>Masalan:</b> Yo‘lda STOP bor, lekin mashina yo‘q — baribir to‘xtaysan.</li>
+                            <li><b>Masalan:</b> Piyada yugurib chiqmoqchi — chiroq yashil bo‘lsa ham yo‘l beriladi.</li>
+                            <li><b>Masalan:</b> Quvib o‘tayapsiz, lekin oldinda piyodalar o‘tish joyi — TAQIQLANGAN.</li>
                         </ul>
                     </div>
-                    
-                    <p class="muted" style="font-size:12px; margin-top:15px; text-align:center;">**Qoida:** Qizil belgilar **taqiqlaydi**, sariq uchburchaklar **ogohlantiradi**, ko'k belgilar esa **ko'rsatma beradi** yoki **ruxsat etadi** (yoki ma'lumot beradi).</p>
+
+                    <!-- 7. Mini test -->
+                    <div class="study-section">
+                        <h3 style="color:var(--success)">🧩 Mini-Test (Yodlab qolish uchun)</h3>
+                        <ul>
+                            <li>Romb shakli – nima? → <b>Asosiy yo‘l</b></li>
+                            <li>STOP – nima? → <b>To‘liq to‘xtash shart</b></li>
+                            <li>Qizil doira – nima? → <b>Taqiqlovchi</b></li>
+                            <li>Aylanmada kim ustun? → <b>Ichkarida yurgan</b></li>
+                        </ul>
+                    </div>
                 </section>
+
 
                 <section id="school-screen" class="screen" data-index="5">
                     <h1 class="title-lg" style="font-size:24px">🏫 Avtomaktablar</h1>
                     <p class="muted" style="margin-bottom:15px; font-size:14px">Viloyatlardagi faol avtomaktablar ro'yxati (Joylashuv + Kontakt):</p>
+
                     <div id="schoolList" style="display:grid;gap:12px;">
+
+                        <!-- Toshkent -->
                         <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
-                            <h4 style="margin:0 0 4px; color:var(--ring)">Toshkent (Markaz)</h4>
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Toshkent (Chilonzor)</h4>
                             <p class="muted" style="font-size:13px">Manzil: Chilonzor, 10-kvartal | Tel: +998 71 123 45 67</p>
                             <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Chilonzor+10-kvartal')">📍 Xaritada ko'rish</button>
                         </div>
+
                         <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
-                            <h4 style="margin:0 0 4px; color:var(--ring)">Samarqand (Qadim)</h4>
-                            <p class="muted" style="font-size:13px">Manzil: Registon ko'chasi, 5-uy | Tel: +998 66 789 01 23</p>
-                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Registon+ko%27chasi+Samarqand')">📍 Xaritada ko'rish</button>
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Toshkent (Yakkasaroy)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Bobur ko‘chasi, 45-uy | Tel: +998 90 555 22 06</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Bobur+ko%27chasi+45')">📍 Xaritada ko'rish</button>
                         </div>
+
+                        <!-- Samarqand -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Samarqand (Registon)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Registon ko'chasi, 5-uy | Tel: +998 66 789 01 23</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Registon+ko%27chasi+5')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Samarqand (Siab bozori)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Siab, Amir Temur ko‘chasi 12 | Tel: +998 99 444 88 33</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Siab+bozori')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <!-- Andijon -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Andijon (Markaz)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Musayev ko'chasi, 20-uy | Tel: +998 74 228 18 00</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Musayev+ko%27chasi+20,+Andijon')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Andijon (Bobur shoh)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Bobur shoh ko‘chasi, 71-uy | Tel: +998 91 607 43 39</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Bobur+shoh+71,+Andijon')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <!-- Farg'ona -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Farg‘ona (Vodiy markazi)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: A. Farg‘oniy ko‘chasi, 120-uy | Tel: +998 90 123 00 77</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Al+Fargoni+120,+Fargona')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Farg‘ona (Marg‘ilon)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Marg‘ilon sh., Sayid Ahmad ko‘chasi | Tel: +998 93 505 77 44</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Margilon+Sayid+Ahmad')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <!-- Namangan -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Namangan (Davlatobod)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Davlatobod tumani, O‘zbekiston ko‘chasi | Tel: +998 97 111 22 44</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Uzbekistan+ko%27chasi,+Namangan')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Namangan (Chortoq)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Chortoq tumani, Mustaqillik ko‘chasi | Tel: +998 93 002 56 70</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Chortoq,+Namangan')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <!-- Buxoro -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Buxoro (Markaz)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: M. Iqbol ko‘chasi, 45-uy | Tel: +998 98 274 51 00</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=M+Iqbol+45,+Buxoro')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Buxoro (G‘ijduvon)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: G‘ijduvon tumani, Istiqlol ko‘chasi | Tel: +998 90 672 88 99</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Gijduvon,+Buxoro')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <!-- Qarshi (Qashqadaryo) -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Qarshi (Markaz)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Shota Rustaveli ko‘chasi | Tel: +998 97 770 01 10</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Shota+Rustaveli+Qarshi')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Qarshi (Koson)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Koson sh., Navbahor ko‘chasi | Tel: +998 94 222 77 66</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Koson+Navbahor')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <!-- Surxondaryo -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Termiz (Surxondaryo)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: At-Termiziy ko‘chasi | Tel: +998 91 503 44 44</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Termiz+At-Termiziy')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Sho‘rchi (Surxon)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Sho‘rchi tumani, Bozor ko‘chasi | Tel: +998 93 701 99 55</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Shorchi')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <!-- Navoiy -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Navoiy (Markaz)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Galaba ko‘chasi | Tel: +998 90 777 55 44</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Navoiy+Galaba')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Zarafshon (Navoiy)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Zarafshon sh., Amir Temur ko‘chasi | Tel: +998 93 000 88 22</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Zarafshon')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <!-- Xorazm -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Xiva (Xorazm)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Polvon darvoza yaqinida | Tel: +998 91 222 66 88</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Xiva')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Urganch (Xorazm)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Urganch sh., Al-Xorazmiy ko‘chasi | Tel: +998 93 990 07 60</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Urganch')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <!-- Jizzax -->
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Jizzax (Zomin yo‘li)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Jizzax sh., Zomin yo‘li | Tel: +998 92 311 20 30</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Jizzax+Zomin')">📍 Xaritada ko'rish</button>
+                        </div>
+
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Jizzax (Paxtakor)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Paxtakor sh., Yangi yo‘l | Tel: +998 99 230 50 90</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Paxtakor+Jizzax')">📍 Xaritada ko'rish</button>
+                        </div>
+
                     </div>
                 </section>
+
             </div>
+
+                            <section style="
+                                margin:28px auto 0;
+                                max-width:520px;
+                                padding:26px 22px;
+                                background:rgba(255,255,255,0.08);
+                                border:1px solid rgba(255,255,255,0.18);
+                                border-radius:22px;
+                                backdrop-filter:blur(14px);
+                                -webkit-backdrop-filter:blur(14px);
+                                box-shadow:0 12px 28px rgba(0,0,0,0.22);
+                                text-align:center;
+                            ">
+                                <h2 style="
+                                    margin:0;
+                                    font-weight:600;
+                                    font-size:20px;
+                                    color:var(--ring);
+                                    letter-spacing:0.3px;
+                                ">
+                                    Avto Bozor & Testlar
+                                </h2>
+
+                                <p style="
+                                    margin:10px 0 18px;
+                                    font-size:14px;
+                                    opacity:0.85;
+                                    line-height:1.45;
+                                ">
+                                    Mashina bozor narxlari, avto yangiliklar va kunlik nazariy testlarni
+                                    birinchi bo‘lib oling. Kanaga obuna bo‘ling!
+                                </p>
+
+                                <button class="btn" style="
+                                    width:100%;
+                                    padding:12px 18px;
+                                    font-size:15px;
+                                    font-weight:500;
+                                    border-radius:14px;
+                                    display:flex;
+                                    justify-content:center;
+                                    align-items:center;
+                                    gap:6px;
+                                    box-shadow:0 6px 14px rgba(42,111,255,0.35);
+                                " onclick="window.open('https://t.me/avtoelon_avtobozor','_blank')">
+
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 2L11 13"></path>
+                                        <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                                    </svg>
+
+                                    Kanalga kirish
+                                </button>
+                            </section>
             
             <footer style="padding: env(safe-area-inset-bottom) 0 30px; text-align:center">
                 <div class="muted" style="font-size:12px">Savollar: <a href="https://t.me/avtoelon_avtobozor" target="_blank" style="color:var(--ring); text-decoration:none;">@AvtonarxBot</a> | © <span id="year"></span> Avto Maktab</div>
             </footer>
         </div>
     </div>
+
+
+    
     
     <div class="bottom-nav-bar">
         <div class="phone bottom-nav-inner">
@@ -546,21 +834,103 @@
             { id:5, text:"Tirkama tortishda tormoz yo'li qanday o'zgaradi?", choices:["Tormoz yo'li uzayadi","Tormoz yo'li qisqaradi","O'zgarmaydi","Faqat burilish radiusi o'zgaradi"], correctIndex:0, rationale:"Tirkama og'irlikni oshiradi, bu esa inersiya kuchini oshirib, tormoz masofasini uzaytiradi.", image: null },
             { id:6, text:"Kirish taqiqlangan belgisining ko'rinishi qanday?", choices:["Qizil romb","Qizil halqali oq doira","Qora chiziqli sariq uchburchak","Oq doira ichida qizil gorizontal chiziq"], correctIndex:3, rationale:"3.1. 'Kirish taqiqlangan' belgisi oq doira ichidagi qizil gorizontal chiziqdan iborat.", image: null },
             { id:7, text:"Yog'ingarchilikda (yomg'ir/qor) to'xtash masofasi?", choices:["O'zgarmaydi","Qisqaradi","Uzayadi","Faqat old g'ildirak yopishadi"], correctIndex:2, rationale:"Yo'l yuzasi sirpanchiq bo'lgani uchun g'ildiraklar yopishishini yo'qotadi va tormoz masofasi uzayadi.", image: null },
-            { id:8, text:"ABS tizimi nima vazifani bajaradi?", choices:["Tezlikni oshiradi","Tormozlashda g'ildirak bloklanishini oldini oladi","Yonilg'i kamaytiradi","Mashina burilishini tezlashtiradi"], correctIndex:1, rationale:"ABS (Anti-lock Braking System) favqulodda tormozlashda rul boshqaruvini saqlab qolish uchun g'ildiraklar bloklanishini oldini oladi.", image: null },
+            { id:8, text:"ABS tizimi nima vazifani bajaradi?", choices:["Tezlikni oshiradi","Tormozlashda g'ildirak bloklanishini oldini oladi","Yonilg'i kamaytiradi","Mashina burilishini tezlashtiradi"], correctIndex:1, rationale:"ABS favqulodda tormozlashda g'ildiraklar bloklanishini oldini olib, boshqaruvni saqlaydi.", image: null },
             { id:9, text:"Tartibga solinmagan piyodalar o'tish joyida kim ustuvorlikka ega?", choices:["Avtomobil","Velosipedchi","Piyoda","Avtobus"], correctIndex:2, rationale:"Piyodalar o'tish joyida doimo piyoda ustuvorlikka ega.", image: null },
-            { id:10, text:"Haydash paytida mobil telefondan gaplashish mumkinmi?", choices:["Hech qachon","Faqat tunda","Bluetooth/garnitura orqali mumkin","Har doim qo'lda ushlab"], correctIndex:2, rationale:"Qo'llarsiz rejimda (Hands-free) ruxsat beriladi, chunki e'tiborni yo'ldan chalg'itmaslik kerak.", image: null },
-            // Qo'shimcha 10 ta savol
-            { id:11, text: "Chorrahalarda burilish signali (povorotnik) qachon yoqilishi kerak?", choices: ["Faqat burilish paytida","Manevr boshlashdan oldin","Faqat tunda","Kerak emas"], correctIndex:1, rationale: "Manevr boshlashdan yetarli masofa oldin boshqa haydovchilarni ogohlantirish uchun yoqilishi shart.", image: null },
-            { id:12, text: "Yashil svetafor yonib turganida haydovchi qachon to'xtashi kerak?", choices: ["Har doim","Yo'l berish kerak bo'lsa","Chorrahada tirbandlik hosil bo'lsa","Hech qachon"], correctIndex:2, rationale: "Agar chorrahaning narigi tomonida tirbandlik bo'lsa va bu boshqa yo'nalishdagi harakatga xalaqit bersa, to'xtash kerak.", image: null },
-            { id:13, text: "Avariya (avtohalokat) sodir bo'lganda birinchi navbatda nima qilish kerak?", choices: ["Sug'urta kompaniyasiga qo'ng'iroq qilish","Avtomobillarni yo'l chetiga olib qo'yish","Avariya ishoralarini o'rnatish va 'avariyka' yoqish","Politsiyani kutish"], correctIndex:2, rationale: "Birinchi navbatda xavfsizlikni ta'minlash uchun 'avariyka' yoqiladi va avariya ishoralari o'rnatiladi.", image: null },
-            { id:14, text: "Maktab avtobusi to'xtaganida uning yonidan o'tayotgan transport tezligi qanday bo'lishi kerak?", choices: ["70 km/s dan oshmasligi kerak","50 km/s dan oshmasligi kerak","Faqaat 20 km/s dan oshmasligi kerak","Tezlik cheklanmagan"], correctIndex:2, rationale: "Bolalar yo'lga chiqishi mumkinligi sababli, 20 km/soatdan oshmasligi qat'iyan talab qilinadi.", image: null },
-            { id:15, text: "Asosiy yo'l belgisi qanday shaklda bo'ladi?", choices: ["Uchburchak","Oq romb sarg'ish rangda","Ko'k kvadrat","Qizil doira"], correctIndex:1, rationale: "Asosiy yo'l belgisi sarg'ish rangli ichi oq romb shaklida bo'ladi.", image: null },
-            { id:16, text: "YSHQ bo'yicha eng yaqin joylashgan to'xtash joyi belgisi qanday rangda bo'ladi?", choices: ["Yashil","Ko'k","Qizil","Sariq"], correctIndex:1, rationale: "Ko'k kvadrat fonli belgilar ko'rsatma beruvchi belgilar hisoblanadi (5.15 'To'xtash joyi' kabi).", image: null },
-            { id:17, text: "Tuman chiroqlari (protivotumanka) qachon yoqilishi mumkin?", choices: ["Faqat tunda","Faqat yomg'irda","Tuman, kuchli yog'ingarchilik yoki cheklangan ko'rinish sharoitida","Har doim"], correctIndex:2, rationale: "Tuman chiroqlari ko'rinish cheklanganida yordamchi yorug'lik sifatida ishlatiladi.", image: null },
-            { id:18, text: "Haydovchi qachon yo'lovchilarni tashishni boshlashi mumkin?", choices: ["Har qanday vaziyatda","Faqat avtomobil to'liq to'xtaganida","Mashina 10 km/soat tezlikda harakatlansa","Agar old eshik bo'lsa"], correctIndex:1, rationale: "Yo'lovchilarni tushirish/chiqarish faqat avtomobil to'liq to'xtaganidan keyin amalga oshirilishi kerak.", image: null },
-            { id:19, text: "Yo'l harakati qoidalarida tezlikni cheklovchi belgilarning amal qilish zonasi qayerda tugaydi?", choices: ["Faqat keyingi chorrahada","'Barcha cheklovlar zonasining tugashi' belgisi o'rnatilganda","Aholi punktidan chiqishda","Yuqoridagi barchasi"], correctIndex:3, rationale: "Cheklov amal qilish zonasi keyingi chorrahada, maxsus bekor qilish belgisi o'rnatilganda yoki aholi punktidan chiqish joyida tugaydi.", image: null },
-            { id:20, text: "Boshqa transportni quvib o'tish qachon taqiqlanadi?", choices: ["Faqat tunda","Piyodalar o'tish joyida","Asosiy yo'lda bo'lsa","Tezlik 100 km/soat bo'lsa"], correctIndex:1, rationale: "Piyodalar xavfsizligini ta'minlash maqsadida piyodalar o'tish joyida quvib o'tish qat'iyan taqiqlanadi.", image: null },
+            { id:10, text:"Haydash paytida mobil telefondan gaplashish mumkinmi?", choices:["Hech qachon","Faqat tunda","Bluetooth/garnitura orqali mumkin","Har doim qo'lda ushlab"], correctIndex:2, rationale:"Qo‘llarsiz rejimda ruxsat beriladi. Qo‘lda ushlab gaplashish taqiqlanadi.", image: null },
+            { id:11, text: "Chorrahalarda burilish signali (povorotnik) qachon yoqilishi kerak?", choices: ["Faqat burilish paytida","Manevr boshlashdan oldin","Faqat tunda","Kerak emas"], correctIndex:1, rationale: "Manevr boshlashdan yetarli masofa oldin yoqilishi shart.", image: null },
+            { id:12, text: "Yashil svetafor yonib turganida haydovchi qachon to'xtashi kerak?", choices: ["Har doim","Yo'l berish kerak bo'lsa","Chorrahada tirbandlik hosil bo'lsa","Hech qachon"], correctIndex:2, rationale: "Agar chorrahadan o‘tish imkonini to‘suvchi tirbandlik bo‘lsa, to‘xtash kerak.", image: null },
+            { id:13, text: "Avariya sodir bo'lganda birinchi navbatda nima qilish kerak?", choices: ["Sug'urta kompaniyasiga qo'ng'iroq qilish","Avtomobillarni yo'l chetiga olib qo'yish","Avariya ishoralarini o'rnatish va 'avariyka' yoqish","Politsiyani kutish"], correctIndex:2, rationale: "Avvalo xavfsizlik: avariyka yoqiladi va ogohlantiruvchi uchburchak qo'yiladi.", image: null },
+            { id:14, text: "Maktab avtobusi to'xtaganida uning yonidan o'tayotgan transport tezligi qanday bo'lishi kerak?", choices: ["70 km/s dan oshmasligi kerak","50 km/s dan oshmasligi kerak","20 km/s dan oshmasligi kerak","Tezlik cheklanmagan"], correctIndex:2, rationale: "Bolalar xavfsizligi uchun keskin sekinlashish talab etiladi.", image: null },
+            { id:15, text: "Asosiy yo'l belgisi qanday shaklda bo'ladi?", choices: ["Uchburchak","Oq romb sarg'ish rangda","Ko'k kvadrat","Qizil doira"], correctIndex:1, rationale: "Asosiy yo‘l belgisi sarg‘ish fonli oq romb.", image: null },
+            { id:16, text: "YSHQ bo'yicha eng yaqin joylashgan to'xtash joyi belgisi qanday rangda bo'ladi?", choices: ["Yashil","Ko'k","Qizil","Sariq"], correctIndex:1, rationale: "Ko‘rsatma beruvchi belgilar odatda ko‘k fonli bo‘ladi.", image: null },
+            { id:17, text: "Tuman chiroqlari qachon yoqiladi?", choices: ["Faqat tunda","Faqat yomg'irda","Ko‘rinish cheklanganda (tuman/yog‘ingarchilik)","Har doim"], correctIndex:2, rationale: "Ko‘rinish yomonlashganda yordamchi yoritish uchun.", image: null },
+            { id:18, text: "Haydovchi qachon yo'lovchilarni tushirib/chiqarishi mumkin?", choices: ["Har qanday vaziyatda","Faqat avtomobil to'liq to'xtaganda","Mashina 10 km/soatda yurganda","Agar old eshik bo'lsa"], correctIndex:1, rationale: "Yo‘lovchi amallari faqat to‘liq to‘xtaganda.", image: null },
+            { id:19, text: "Tezlikni cheklovchi belgining amal qilish zonasi qayerda tugaydi?", choices: ["Keyingi chorrahada","'Barcha cheklovlar tugashi' belgisi bilan","Aholi punktidan chiqishda","Yuqoridagilar barchasi"], correctIndex:3, rationale: "Cheklov bir nechta holatda bekor qilinishi mumkin.", image: null },
+            { id:20, text: "Boshqa transportni quvib o'tish qachon taqiqlanadi?", choices: ["Faqat tunda","Piyodalar o'tish joyida","Asosiy yo'lda bo'lsa","Tezlik 100 km/soat bo'lsa"], correctIndex:1, rationale: "Piyodalar o'tish joyida quvib o‘tish taqiqlanadi.", image: null },
+
+            // 21—100 yangi savollar
+            { id:21, text:"Qaysi transport vositalari yo'nalishli transport vositalari hisoblanadi?", choices:["Yo‘nalish va bekatlari belgilangan umum foydalanishdagi (avtobus, trolleybus, tramvay)","Faqat avtobuslar","Istalgan yo‘lovchi tashuvchi avtomobillar","Faqat taksilar"], correctIndex:0, rationale:"Yo‘nalishli transport — belgilangan yo‘nalish/bekatlar bo‘yicha harakatlanadigan jamoat transporti.", image:null },
+            { id:22, text:"Asosiy yo‘l –", choices:["Tuproqli yo‘lga nisbatan qattiq qoplamali yo‘l","Toshli yo‘lga nisbatan asfalt yo‘l","Ko‘proq bo‘lakli yo‘l","Yuqoridagilardan to‘g‘ri ta’rif keltirilmagan"], correctIndex:0, rationale:"Asosiy yo‘l odatda qattiq qoplamali yoki belgilar bilan asosiy deb belgilangan yo‘l.", image:null },
+            { id:23, text:"'To‘xtash taqiqlanadi' belgisi nimani anglatadi?", choices:["Faqat tunda to‘xtash mumkin emas","Hech qachon to‘xtash ham, turib qolish ham mumkin emas","Qisqa muddatga to‘xtash mumkin","Faqat parkingga ruxsat"], correctIndex:1, rationale:"Belgi amalida to‘xtash ham, turib qolish ham taqiqlanadi.", image:null },
+            { id:24, text:"Svetafor ishlamayotgan chorrahada ustuvorlik qanday belgilanadi?", choices:["Chapdan kelgan transport ustun","O‘ng tomondagi transportga yo‘l beriladi","Hech kim ustun emas","Piyoda ustun"], correctIndex:1, rationale:"'O‘ng qo‘l qoidasi' — o‘ngdan kelganga yo‘l beriladi.", image:null },
+            { id:25, text:"'STOP' (To‘xtash) belgisi ko‘rilganda haydovchi nima qiladi?", choices:["Agar mashina bo‘lsa to‘xtaydi","Har doim to‘liq to‘xtaydi","Sekinlashtirib o‘tadi","Signallab o‘tadi"], correctIndex:1, rationale:"STOP belgisida to‘liq to‘xtash majburiy.", image:null },
+            { id:26, text:"'Yo‘l ber' (Ustunlik) belgisi nimani talab qiladi?", choices:["To‘xtash","Tezlikni 20 km/soatga tushirish","Asosiy yo‘ldagi transportga yo‘l berish","Signal berish"], correctIndex:2, rationale:"Asosiy yo‘lda harakatlanayotganlarga ustunlik beriladi.", image:null },
+            { id:27, text:"Uzoq chiroqlarni qachon ishlatish taqiqlanadi?", choices:["Shahar ichida yaxshi yoritilgan ko‘chalarda","Kunduz kuni qish faslida","Yomg‘irda","Yo‘l bo‘sh bo‘lsa"], correctIndex:0, rationale:"Yaxshi yoritilgan joylarda uzoq chiroq ko‘z qamashtiradi.", image:null },
+            { id:28, text:"Yo‘l-yo‘lakay transport vositasini yonish xavfi paydo bo‘lsa, avvalo nima qilinadi?", choices:["Suv sepiladi","Akkumulyator uziladi va odamlar xavfsiz joyga olib chiqiladi","Harakat davom ettiriladi","Dvigatelga gaz beriladi"], correctIndex:1, rationale:"Olov xavfida elektr manbai uzilib, odamlar evakuatsiya qilinadi.", image:null },
+            { id:29, text:"Avariya uchburchagi qayerga qo‘yiladi?", choices:["Mashina kapotiga","Orqa oynaga yopishtiriladi","Yo‘l yoqasiga me’yoriy masofada","Old bamper ostiga"], correctIndex:2, rationale:"Orqadan kelayotganlarga ogohlantirish uchun yo‘l yoqasiga qo‘yiladi.", image:null },
+            { id:30, text:"Yomg‘irda akvaplanning xavfi nimadan?", choices:["Tormozlarning qizishi","G‘ildirakning suv qatlamiga chiqib yo‘l bilan aloqa yo‘qolishi","Dvigatel yong‘in xavfi","Shina bosimi ortishi"], correctIndex:1, rationale:"Suv qatlamida shina yo‘lni 'ushlamaydi', boshqaruv yo‘qolishi mumkin.", image:null },
+            { id:31, text:"Qaysi belgi 'Kirish taqiqlanadi' ga teskari ma’no beradi?", choices:["Harakatlanish taqiqlangan","Yo‘l yopiq","Qizil doira ichida oq chiziq yo‘q","Ikkala tomondan harakatlanish"], correctIndex:3, rationale:"Ikkala tomondan harakatlanish belgisi yo‘lga kirish mumkinligini bildiradi (kiritish emas, balki harakat yo‘nalishlari).", image:null },
+            { id:32, text:"Velosiped yo‘lkasi bo‘lsa, velosipedchi qayerda harakatlanadi?", choices:["Avtomobil yo‘lagida","Yo‘l chetida","Aynan velosiped yo‘lkasida","Piyodalar yo‘lagida"], correctIndex:2, rationale:"Maxsus yo‘lak mavjud bo‘lsa, undan foydalanish shart.", image:null },
+            { id:33, text:"Qachon avariya signali (avariyka) yoqiladi?", choices:["Faqat yomg‘irda","Tirkama tortganda","Majburiy to‘xtashda yoki xavf tug‘ilganda","Yo‘l bo‘sh bo‘lsa"], correctIndex:2, rationale:"Xavf tug‘ilganda yoki majburiy to‘xtashda boshqalarni ogohlantirish uchun.", image:null },
+            { id:34, text:"Temir yo‘l kesishmasida svetofor qizil miltillasa…", choices:["Tezlikni kamaytirib o‘tish mumkin","Piyodalar o‘tishi mumkin","To‘xtash shart","Faqat yuk mashinalari to‘xtaydi"], correctIndex:2, rationale:"Qizil miltillash — qat’iy to‘xtash talabi.", image:null },
+            { id:35, text:"Burilishdan oldin orqa ko‘rish oynalarini tekshirishning maqsadi?", choices:["Dizaynni baholash","Orqadan kelayotganlar xavfsizligini ta’minlash","Yoqilg‘i tejamkorligi","Nisbiy tezlikni o‘lchash"], correctIndex:1, rationale:"Manevr xavfsizligini tekshirish uchun ko‘rinishni nazorat qilish kerak.", image:null },
+            { id:36, text:"Tez yordam, yong‘in yoki politsiya sirenali kelayotgan bo‘lsa…", choices:["Tezlikni oshirish","Harakatni to‘xtatmasdan davom etish","Ustuvorlik berish uchun yo‘lni bo‘shatish","Signal berish"], correctIndex:2, rationale:"Favqulodda xizmatlarga ustuvorlik beriladi.", image:null },
+            { id:37, text:"'Aylanma harakat' (aylanma chorraha)ga kirishda kim ustun?", choices:["Ichkarida aylanayotgan transport","Kirish chizig‘idagi transport","Piyodalar","Hech kim"], correctIndex:0, rationale:"Aylanmada yurgan transportga yo‘l beriladi.", image:null },
+            { id:38, text:"Qaysi holatda tormoz yo‘li eng uzun bo‘ladi?", choices:["Quruq asfalt","Nam yo‘l","Muzlagan/sirpanchiq yo‘l","Yangi asfalt"], correctIndex:2, rationale:"Sirpanishda yopishish juda past, tormoz masofasi uzayadi.", image:null },
+            { id:39, text:"Oraliq masofani saqlashning umumiy qoidasi?", choices:["1 soniya qoidasi","2 soniya qoidasi","5 soniya qoidasi","Hech qanday qoida yo‘q"], correctIndex:1, rationale:"Kamida 2 soniyalik interval xavfsiz.", image:null },
+            { id:40, text:"Olddan qarama-qarshi transport keng o‘tib ketayotgan yo‘lda…", choices:["Markaziy chiziqni bosib o‘tish","O‘ng chetga yaqinlashib sekinlashish","Tezlikni oshirish","Signalni uzluksiz bosish"], correctIndex:1, rationale:"Qarama-qarshi harakat xavfsizligi uchun chekka tomon sekinlashiladi.", image:null },
+            { id:41, text:"Gibrid/elektro avtomobillarni jimligi nimani anglatadi?", choices:["Hech qanday xavf yo‘q","Piyodalar ularni eshitmasligi mumkin","Tezlik cheklanmaydi","Farqlanmaydi"], correctIndex:1, rationale:"Past tovushli bo‘lgani uchun piyodalar kech sezishi mumkin — hushyorlik kerak.", image:null },
+            { id:42, text:"Qaysi belgi yo‘lning torayishini bildiradi?", choices:["Uchburchak ichida ikki chiziq yaqinlashgan","Ko‘k kvadrat","Qizil doira","Romb"], correctIndex:0, rationale:"Ogohlantiruvchi uchburchak ichidagi yaqinlashuvchi chiziqlar — yo‘l torayishi.", image:null },
+            { id:43, text:"Avtomobil orqa tumanga qarshi chiroqlari qachon yoqiladi?", choices:["Har doim","Ko‘rinish juda yomon bo‘lganda","Faqat tunda","Yomg‘ir tomchilaganda"], correctIndex:1, rationale:"Kuchli tuman/qor/yomg‘irda orqani ko‘rinishini yaxshilash uchun.", image:null },
+            { id:44, text:"Qachon signaldan (gudok) foydalanish mumkin?", choices:["Tungi vaqtda ko‘p foydalanish kerak","Faqat xavfning oldini olish uchun","Har chorrahada","Yo‘l bo‘sh bo‘lsa"], correctIndex:1, rationale:"Signal faqat xavfni ogohlantirish uchun.", image:null },
+            { id:45, text:"Qaysi vaziyatda yo‘l chiziqlaridan ustuvorroq hisoblanadi belgilar?", choices:["Hech qachon","Har doim chiziq ustun","Belgilar odatda chiziqlardan ustun","Hech biri ustun emas"], correctIndex:2, rationale:"Tartibda: svetafor > tartibga soluvchi > belgilar > chiziqlar.", image:null },
+            { id:46, text:"Tungi haydashda qarama-qarshi chiroqlar qamashtirsa nima qilasiz?", choices:["Ko‘zingizni to‘g‘riga tikasiz","Yo‘lning o‘ng chetiga qaraysiz","Tezlikni oshirasiz","Uzoq chiroqni yoqasiz"], correctIndex:1, rationale:"O‘ng chetni kuzatib, tezlikni moslab xavfsizlikni saqlang.", image:null },
+            { id:47, text:"Shinalardagi to‘g‘ri bosimning foydasi?", choices:["Yonilg‘i sarfini oshiradi","Tormoz masofasini uzaytiradi","Boshqaruv va tormozlanishni yaxshilaydi","Ta’siri yo‘q"], correctIndex:2, rationale:"To‘g‘ri bosim — barqarorlik va tormozlanish samarasi.", image:null },
+            { id:48, text:"Qachon chapga burilish taqiqlanishi mumkin?", choices:["Ikki tomonlama harakatda","Maxsus taqiqlovchi belgi bo‘lsa","Svetafor yashil bo‘lsa","Yo‘l bo‘sh bo‘lsa"], correctIndex:1, rationale:"Tegishli taqiqlovchi belgi/yo‘l chizig‘i bo‘lsa, burilish taqiqlanadi.", image:null },
+            { id:49, text:"Quvib o‘tishdan oldin nimalar tekshiriladi?", choices:["Faqat olddagi mashina masofasi","Yo‘l belgisi, chiziqlar va qarama-qarshi yo‘nalish holati","Faqat orqadagi mashina","Faqat tezlik"], correctIndex:1, rationale:"Belgilar/chiziqlar ruxsatini va qarama-qarshi yo‘lni tekshirish shart.", image:null },
+            { id:50, text:"Chapga burilganda qarama-qarshi yo‘nalishga yo‘l berish qachon kerak?", choices:["Hech qachon","Faqat tunda","Har doim burilishda","Faqat katta chorrahalarda"], correctIndex:2, rationale:"Burilishda qarama-qarshi to‘g‘ri kelayotganlarga yo‘l beriladi.", image:null },
+            { id:51, text:"Qo‘l tormozi (ruchnoy) qachon ishlatiladi?", choices:["Faqat harakatda","To‘xtash/parkingda avtomobilni tutib turish uchun","Tezlashish uchun","Burilishda"], correctIndex:1, rationale:"Qo‘l tormozi — to‘xtagan holatda avtomobilni ushlab turadi.", image:null },
+            { id:52, text:"Tayanch nuqtasiz bolani old o‘rindiqda olib ketish…", choices:["Har doim ruxsat","Maxsus bolalar o‘rindiqsiz xavfli","Faqat qisqa masofada ruxsat","Hech qachon muammo emas"], correctIndex:1, rationale:"Bolalar uchun mos o‘rindiq va mahkamlash vositasi kerak.", image:null },
+            { id:53, text:"Yoqilg‘i sizib chiqsa…", choices:["Tezda harakatni davom etish","Darhol to‘xtab choralar ko‘rish","Yoqilg‘ini arzonlashtirish","Avariya signalini o‘chirib qo‘yish"], correctIndex:1, rationale:"Yong‘in xavfi — darhol to‘xtab muammoni bartaraf etish kerak.", image:null },
+            { id:54, text:"Qizil chiroq miltillab tursa (svetafor)…", choices:["E’tibor bermaslik mumkin","To‘xtab, ehtiyotkorlik bilan o‘tish","Yashilga teng","Faqat chapga burilish mumkin"], correctIndex:1, rationale:"Miltillovchi qizil — to‘xtab, xavfsiz bo‘lsa o‘tish talab qilinadi (mahalliy qoidalarga bog‘liq, ehtiyotkorlik sharti bilan).", image:null },
+            { id:55, text:"Yashil chiroq yonib o‘tganda yo‘l bo‘sh bo‘lmasa…", choices:["Baribir kirish","To‘xtab navbat kutish","Signal berib o‘tish","Yon yo‘lga kirish"], correctIndex:1, rationale:"Chorrahaning ichini to‘smaslik uchun to‘xtaysiz.", image:null },
+            { id:56, text:"Orqa o‘rindiqda o‘tirganlar uchun xavfsizlik kamari…", choices:["Majburiy emas","Faqat uzoq yo‘lda","Majburiy","Faqat bolalarga"], correctIndex:2, rationale:"Barcha o‘rindiqlarda xavfsizlik kamari majburiy.", image:null },
+            { id:57, text:"Avtomatik uzatmalar qutisida to‘xtashda tutib turish uchun qaysi rejim?", choices:["D","N","R","P"], correctIndex:3, rationale:"P (Park) — to‘xtashda transmissiyani bloklab turadi.", image:null },
+            { id:58, text:"Yo‘l chetida to‘xtaganda avval nima qilinadi?", choices:["Darhol eshikni ochish","Avariya signalini yoqish va xavfsiz chetga chiqish","Telefon bilan gaplashish","Dvigatelni gazlash"], correctIndex:1, rationale:"Boshqa ishtirokchilarni ogohlantirish va xavfsizlik birinchi o‘rinda.", image:null },
+            { id:59, text:"Qachon sekin harakatlanayotgan transportni quvib o‘tish taqiqlanadi?", choices:["Piyodalar o‘tish joyi oldida/ichida","Yo‘l bo‘sh bo‘lsa","Svetafor yashil bo‘lsa","Tunda"], correctIndex:0, rationale:"Piyodalar o‘tish joylarida quvib o‘tish taqiqlanadi.", image:null },
+            { id:60, text:"Yuklarni tashishda nimaga e’tibor beriladi?", choices:["Faqat og‘irlikka","Mahkamlash, o‘lcham va ko‘rinishga","Faqat rangiga","Faqat egasiga"], correctIndex:1, rationale:"Yuk mahkamligi, o‘lchamning me’yoriyligi va ko‘rinish talablariga rioya qilinadi.", image:null },
+            { id:61, text:"Yo‘l ustuni va to‘siqlar yaqinida to‘xtash…", choices:["Hech qachon muammo emas","Ko‘rinishni to‘sishi mumkin","Har doim ruxsat","Majburiy"], correctIndex:1, rationale:"Ko‘rinishni to‘smaslik kerak.", image:null },
+            { id:62, text:"'Haydovchi charchog‘i'ning eng xavfli belgisi?", choices:["Ko‘p suv ichish","Ko‘z yumilib ketishi","Telefonni tekshirish","Musiqa balandligi"], correctIndex:1, rationale:"Uxlab qolish xavfi — zudlik bilan to‘xtab dam olish kerak.", image:null },
+            { id:63, text:"Qor qoplagan yo‘lda harakatlanish uslubi?", choices:["Keskin tormoz/burilish","Yumshoq boshqaruv va oldindan rejalash","Tezlikni doimiy oshirish","Uzoq chiroq"], correctIndex:1, rationale:"Silliq boshqaruv sirpanishni kamaytiradi.", image:null },
+            { id:64, text:"Qachon avtotransport yonishiga ko‘proq xavf tug‘iladi?", choices:["Yoqilg‘i sizganda","Yomg‘irda","Qishda","Tuman bo‘lganda"], correctIndex:0, rationale:"Yoqilg‘i sizishi — yong‘in xavfi.", image:null },
+            { id:65, text:"'Avtomobil yo‘li' belgisining ma’nosi?", choices:["Faqat yuk mashinalari","Faqat avtobuslar","Avtomobillar uchun mo‘ljallangan yo‘l qoidalari kuchayadi","Velosipedlar ustun"], correctIndex:2, rationale:"Avtomobil yo‘li — maxsus tartib va cheklovlar amal qiladi.", image:null },
+            { id:66, text:"Avariya joyida birinchi yordam ko‘rsatishda birinchi qadam?", choices:["Bandaj qo‘yish","Jarohatni suratga olish","Xavfsizlikni ta’minlash (yo‘lni ogohlantirish)","Hujjat so‘rash"], correctIndex:2, rationale:"Avval o‘zingiz va boshqalarning xavfsizligini ta’minlash kerak.", image:null },
+            { id:67, text:"Svetofor sariq chiroq yonib o‘tganda…", choices:["Tezlikni oshirib o‘ting","To‘xtashga tayyorlaning","Hech narsa o‘zgarmaydi","Chapga buriling"], correctIndex:1, rationale:"Sariq — ogohlantiruvchi, to‘xtashga tayyorlanish kerak.", image:null },
+            { id:68, text:"Avtomobil orqa tumanga qarshi chiroqlarini nojo‘ya ishlatish oqibati?", choices:["Hech narsa","Orqadagi haydovchilarni ko‘zini qamashtiradi","Yonilg‘i sarfi oshadi","Dvigatel isiydi"], correctIndex:1, rationale:"Orqadagilarga noqulaylik va xavf tug‘diradi.", image:null },
+            { id:69, text:"Qaysi belgilar ogohlantiruvchi hisoblanadi?", choices:["Ko‘k kvadratlar","Qizil doiralar","Sariq fonli uchburchaklar","Yashil to‘rtburchaklar"], correctIndex:2, rationale:"Ogohlantiruvchi belgilar uchburchak shaklida bo‘ladi.", image:null },
+            { id:70, text:"Tirkama bilan harakatlanganda burilish…", choices:["Odatdagidan kengroq radiusda bajariladi","Bir xil","Torayadi","Foydasi yo‘q"], correctIndex:0, rationale:"Tirkama sabab burilish radiusi kengayadi.", image:null },
+            { id:71, text:"Yo‘l qoplamasida yog‘/yoqilg‘i izi ko‘rsangiz…", choices:["Tezlikni oshirasiz","Keskin tormozlaysiz","Sekinlashtirib ehtiyotkorlik bilan o‘tasiz","Signal berasiz"], correctIndex:2, rationale:"Yopishish pasayadi — sekin va silliq boshqaruv kerak.", image:null },
+            { id:72, text:"'Piyodalar o‘tish joyi' belgisi nimani bildiradi?", choices:["Piyodalar taqiqlangan","Piyodalar ustunligi bor joy","Faqat velosipedlar","Hech narsa"], correctIndex:1, rationale:"Piyodalar uchun xavfsiz o‘tish joyi, ularga yo‘l berish kerak.", image:null },
+            { id:73, text:"Svetafor ishlamay qolgan aylanma chorrahada…", choices:["Ichkaridagiga yo‘l beriladi","Kirishdagiga yo‘l beriladi","Hech kim ustun emas","Piyodalar ustun"], correctIndex:0, rationale:"Aylanmada yurgan transport ustun.", image:null },
+            { id:74, text:"'Kirish taqiqlangan' belgisida kimlarga ruxsat bo‘lishi mumkin?", choices:["Hech kimga","Favqulodda xizmatlarga maxsus holatda","Piyodalarga","Velosipedchilarga har doim"], correctIndex:1, rationale:"Favqulodda xizmatlar uchun istisnolar bo‘lishi mumkin (mahalliy qoidalarga muvofiq).", image:null },
+            { id:75, text:"Qorong‘ida piyodalar ko‘rinishini oshirish uchun…", choices:["Uzoq chiroqni faqat shahar ichida","Faralarni o‘chirib qo‘yish","Toza faralar va oyna, mos nur balandligi","Faqat ichki chiroqlar"], correctIndex:2, rationale:"Ko‘rish-ko‘rinish yaxshi bo‘lsa xavfsizlik oshadi.", image:null },
+            { id:76, text:"Avtomobilni tepalikda to‘xtatishda nima muhim?", choices:["Faqat dvigatelni o‘chirish","G‘ildiraklarni chetga burish va qo‘l tormozi","Signal berish","Hech narsa"], correctIndex:1, rationale:"Aylanishning oldini olish uchun g‘ildirak burilishi va park tormozi kerak.", image:null },
+            { id:77, text:"'O‘ngga burilish taqiqlangan' belgisida…", choices:["Faqat tunda ruxsat","Hech qachon burilmaslik","Agar yo‘l bo‘sh bo‘lsa burish mumkin","Piyodalar bo‘lsa mumkin"], correctIndex:1, rationale:"Taqiqlovchi belgi — burilish taqiqlanadi.", image:null },
+            { id:78, text:"Qaysi holatda chapdan quvib o‘tish o‘rniga o‘ngdan o‘tishga ruxsat bo‘lishi mumkin?", choices:["Hech qachon","Olddagi transport chapga burilayotganida","Tunda","Svetafor yashil bo‘lsa"], correctIndex:1, rationale:"Olddagi chapga burilsa, o‘ngdan ehtiyotkorlik bilan o‘tish mumkin (belgi va chiziqlarga qarab).", image:null },
+            { id:79, text:"Qoidalarga ko‘ra yo‘l bo‘yida eshikni ochishdan oldin…", choices:["Darhol ochish kerak","Orqadan kelayotganlarni tekshirish kerak","Signal berish kerak","E’tibor bermaslik mumkin"], correctIndex:1, rationale:"Orqadan kelayotgan velosipedchi/moto va avtomobillar xavfi bor.", image:null },
+            { id:80, text:"'To‘xtab turish taqiqlanadi' va 'To‘xtash taqiqlanadi' farqi?", choices:["Farqi yo‘q","Birinchisi turib qolishni, ikkinchisi hatto qisqa to‘xtashni ham taqiqlaydi","Aksi","Ikkalasi ham faqat yuk mashinalariga"], correctIndex:1, rationale:"'To‘xtash taqiqlanadi' — umuman to‘xtash ham mumkin emas.", image:null },
+            { id:81, text:"Svetafor yashil, ammo yo‘lni kesib o‘tayotgan piyoda bor…", choices:["Baribir o‘tib ketish","Piyodaga yo‘l berish","Signal berib o‘tish","Tezlikni oshirish"], correctIndex:1, rationale:"Piyodalarga ustuvorlik beriladi.", image:null },
+            { id:82, text:"'Yuqori tezlikda shamol ta’siri' belgisi nimani anglatadi?", choices:["Yomg‘ir bor","Shamol kuchli bo‘lishi mumkin, ehtiyot bo‘ling","Muz bor","Tuman bor"], correctIndex:1, rationale:"Kuchli shamolda boshqaruv barqarorligi yomonlashadi.", image:null },
+            { id:83, text:"Yoqilg‘i quyish shoxobchasida telefon va sigaret…", choices:["Ruxsat","Telefon ruxsat, sigaret yo‘q","Ikalasi ham taqiqlanadi","Faqat sigaret ruxsat"], correctIndex:2, rationale:"Yonuvchan muhit — uchqun xavfi.", image:null },
+            { id:84, text:"'Yo‘l chetidagi ishlar' belgisi ko‘rsatilsa…", choices:["Hech narsa","Tezlikni moslab ehtiyotkorlik bilan o‘tish","Tezlikni oshirish","Signal berish"], correctIndex:1, rationale:"Ishchilar va texnika bor — ehtiyot choralari zarur.", image:null },
+            { id:85, text:"Suv toshgan yo‘lakchadan o‘tishda…", choices:["Tezlikni oshirish","Past tezlikda barqaror gaz va past uzatma","Dvigatelni o‘chirib qo‘yish","Keskin tormozlash"], correctIndex:1, rationale:"Suv zarbidan saqlanish va boshqaruvni yo‘qotmaslik uchun.", image:null },
+            { id:86, text:"G‘ildirak portlasa birinchi amal?", choices:["Keskin tormoz","Rulni mahkam ushlab, sekinlashtirish va yo‘l chetiga xavfsiz to‘xtash","Gaz berish","Signallash"], correctIndex:1, rationale:"Barqarorlikni saqlab, silliq sekinlashish kerak.", image:null },
+            { id:87, text:"'Velosipedchilar bilan umumiy yo‘l' belgisi nimani anglatadi?", choices:["Velosiped taqiqlangan","Avtomobil ustun","Velosipedchilar bilan birga harakat, ehtiyotkorlik","Piyodalar ustun"], correctIndex:2, rationale:"Birga foydalaniladigan yo‘lda ehtiyotkorlik zarur.", image:null },
+            { id:88, text:"Yo‘l-transport hodisasi guvohi bo‘lsangiz…", choices:["E’tibor bermang","Xavfsizlikni ta’minlab tez yordamga xabar bering","Suratga oling xolos","Uzoqdan kuzating"], correctIndex:1, rationale:"Tez yordamga xabar berish va xavfsizlikni ta’minlash fuqarolik burchi.", image:null },
+            { id:89, text:"'Tirqishli (qirqilgan) chiziq' nimani bildiradi?", choices:["Kesib o‘tish mumkin","Hech qachon kesib bo‘lmaydi","Faqat tunda kesiladi","Faqat chapga kesiladi"], correctIndex:0, rationale:"Qirqilgan chiziq — manevrga ruxsat (xavfsiz bo‘lsa).", image:null },
+            { id:90, text:"Avtomobilning 'o‘lik zona'si nimani anglatadi?", choices:["Hech narsa","Oynalarda ko‘rinmaydigan sohalar","Radiator zonasi","Yorug‘lik zonasi"], correctIndex:1, rationale:"Yon/ortda oynalarda ko‘rinmaydigan joylar — yelkadan qarash zarur.", image:null },
+            { id:91, text:"Qachon avtotransportda qishki shinalar foydali?", choices:["Faqat yozda","Sirpanchiq/low harorat sharoitida","Har doim zararli","Faqat qumli yo‘lda"], correctIndex:1, rationale:"Past harorat va sirpanchiq yuzada qishki shina samaraliroq.", image:null },
+            { id:92, text:"'Turar-joy zonasi' belgisida haydash xususiyati?", choices:["Tezlik cheklanmaydi","Piyodalarga maksimal ustuvorlik va sekin harakat","Faqat yuk mashinalari","Velosipedlar taqiqlanadi"], correctIndex:1, rationale:"Turar-joy zonalarida piyodalar ustuvor, tezlik keskin cheklangan.", image:null },
+            { id:93, text:"Avariya joyida transportni surish kerak bo‘lsa…", choices:["Bir o‘zingiz qilasiz","Xavfsizlikni ta’minlab, belgilar va uchburchak qo‘yib, keyin suriladi","Darhol suriladi","Hech narsa"], correctIndex:1, rationale:"Avval ogohlantirish va xavfsizlik.", image:null },
+            { id:94, text:"'Qiyalik pastga' belgisi nimani bildiradi?", choices:["Ko‘tarilish","Tik pastga tushish bor","Tirbandlik","Yomg‘ir"], correctIndex:1, rationale:"Tormoz tizimini nazorat qilish zarurligini bildiradi.", image:null },
+            { id:95, text:"Orqa tumanga qarshi chiroqlarni qachon o‘chirish kerak?", choices:["Hech qachon","Ko‘rinish yaxshilanganda","Faqat tunda","Faqat yomg‘irda"], correctIndex:1, rationale:"Boshqalarning ko‘zini qamashtirmaslik uchun ko‘rinish yaxshilanganda o‘chiriladi.", image:null },
+            { id:96, text:"'Ajratilgan jamoat transport yo‘lagi'ga kirish…", choices:["Har doim ruxsat","Hech qachon ruxsat yo‘q","Belgilar ruxsat bersa ayrim soatlarda mumkin","Faqat tungi vaqtda"], correctIndex:2, rationale:"Mahalliy belgi/qoida asosida vaqtinchalik ruxsat bo‘lishi mumkin.", image:null },
+            { id:97, text:"Chapga burilishda yo‘l o‘rtasida kutish kerak bo‘lsa…", choices:["To‘liq qarama-qarshi yo‘lga chiqib turish","Markazga yaqin, lekin chiziqni kesmasdan turish","O‘ng chetda turish","Hech narsa"], correctIndex:1, rationale:"Markazga yaqinlashib, chiziqlarni buzmasdan navbat kutish xavfsiz.", image:null },
+            { id:98, text:"'Hayvonlar kesib o‘tishi mumkin' belgisi nimani anglatadi?", choices:["Hech narsa","Ov qilish mumkin","Yo‘lda hayvonlar paydo bo‘lishi mumkin, ehtiyot bo‘ling","Piyodalar ustuvor"], correctIndex:2, rationale:"Hayvonlar to‘satdan chiqishi mumkin — tezlikni moslang.", image:null },
+            { id:99, text:"Avtomobilni orqaga harakatga keltirishdan avval…", choices:["Faqat oynaga qarash yetarli","Atrofni yelkadan qarab tekshirish va ehtiyotkorlik","Signal berish kifoya","Tez harakat"], correctIndex:1, rationale:"O‘lik zonalarni yelkadan qarab tekshirish kerak.", image:null },
+            { id:100, text:"Tunda qarama-qarshi yo‘nalishda faralar balandligi noto‘g‘ri bo‘lsa…", choices:["Hech narsa","Boshqalarni ko‘r bo‘lishi mumkin — sozlash zarur","Uzoq chiroq yoqish","Ichki chiroqlarni yoqish"], correctIndex:1, rationale:"Noto‘g‘ri sozlangan faralar boshqalarni qamashtiradi — xavf tug‘diradi.", image:null },
         ];
+
 
 
         let QUESTIONS = [...originalQuestions]; 
@@ -568,6 +938,9 @@
         let answers = [];
         let mistakes = 0;
         let finished = false;
+        let timerInterval = null;
+        let timeLeft = 30 * 60;   // 30 daqiqa
+        let timeUsed = 0;
 
         // --- Mantiqiy Funksiyalar ---
         function show(el){el.classList.remove('hidden')}
@@ -602,7 +975,6 @@
             currentScreen.style.position = 'absolute';
                         
             setTimeout(() => {
-                // eski animatsiya klaslarini tozalaymiz
                 targetScreen.classList.remove('exit-left');
                 currentScreen.classList.remove('exit-left');
 
@@ -632,16 +1004,51 @@
 
         // --- Testni Boshlash va Savolni Renderlash ---
         function resetAll(){ 
-            current=0; answers=[]; mistakes=0; finished=false; 
-            mistakesEl.textContent='0'; 
+            current = 0; 
+            answers = []; 
+            mistakes = 0; 
+            finished = false; 
+
+            mistakesEl.textContent = '0'; 
             reviewListContainer.classList.add('hidden');
-            
-            QUESTIONS = [...originalQuestions].sort(() => Math.random() - 0.5); 
-            
+
+            // ✅ 100 savoldan rand 20 ta olish
+            QUESTIONS = [...originalQuestions]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 20);
+
+            // ✅ TIMER qayta ishga tushadi
+            clearInterval(timerInterval);
+            timeLeft = 30 * 60;   // 30 daqiqa
+            timeUsed = 0;
+            startTimer();
+
             updateProgress(); 
             renderQuestion(); 
             switchScreen('quiz-screen', 1); 
         }
+
+        function startTimer(){
+            const timerEl = document.getElementById('timer');
+            timerInterval = setInterval(()=>{
+                timeLeft--;
+                timeUsed++;
+
+                if (timerEl) {
+                    const m = String(Math.floor(timeLeft/60)).padStart(2,'0');
+                    const s = String(timeLeft%60).padStart(2,'0');
+                    timerEl.textContent = `${m}:${s}`;
+                }
+
+                if(timeLeft <= 0){
+                    clearInterval(timerInterval);
+                    onFinish(true, true); 
+                }
+
+            },1000);
+        }
+
+
 
         function renderQuestion(){
             choicesEl.style.pointerEvents = 'auto';
@@ -780,18 +1187,30 @@
         function saveHistory(correct, wrong, total, failed, details) {
             const history = getHistory();
             const passed = correct >= PASS_SCORE && wrong < MAX_MISTAKES;
+
+            // ✅ vaqtni formatlash
+            const minutes = Math.floor(timeUsed / 60);
+            const seconds = timeUsed % 60;
+            const timeFormatted = `${minutes}m ${seconds}s`;
+
             history.unshift({
-                date: new Date().toLocaleString('uz-UZ', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
+                date: new Date().toLocaleString('uz-UZ', { 
+                    year: 'numeric', month: '2-digit', day: '2-digit', 
+                    hour: '2-digit', minute: '2-digit' 
+                }),
                 correct: correct,
                 wrong: wrong,
                 total: total,
-                passed: passed, 
-                details: details 
+                passed: passed,
+                time: timeFormatted,   // ✅ qo‘shildi!
+                details: details
             });
+
             try {
-                localStorage.setItem('avtoMaktabHistory', JSON.stringify(history.slice(0, 20))); 
-            } catch(e) {}
+                localStorage.setItem('avtoMaktabHistory', JSON.stringify(history.slice(0, 20)));
+            } catch(e){}
         }
+
 
         function clearHistory() {
             if (confirm("Haqiqatdan ham barcha test natijalarini tozalashni xohlaysizmi? Bu amalni qaytarib bo'lmaydi.")) {
@@ -829,11 +1248,13 @@
                         <span style="font-weight:700;">${item.date}</span>
                         <span style="color:${statusColor}; font-weight:700;">${status}</span>
                     </div>
-                    <p class="muted" style="font-size:14px; margin-top:5px;">
-                        Toʻgʻri: <span style="color:var(--success)">${item.correct}</span> / 
-                        Xato: <span style="color:var(--danger)">${item.wrong}</span> / 
-                        Jami: ${item.total} savol
-                    </p>
+                        <p class="muted" style="font-size:14px; margin-top:5px;">
+                            Toʻgʻri: <span style="color:var(--success)">${item.correct}</span> /
+                            Xato: <span style="color:var(--danger)">${item.wrong}</span> /
+                            Jami: ${item.total} savol<br>
+                            ⏱ Vaqt: <b>${item.time}</b> daq. ✅
+                        </p>
+
                     <div id="detail-${index}" class="history-detail-review hidden"></div>
                 `;
 
