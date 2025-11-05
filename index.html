@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <title>Avto Maktab — Mobil (Liquid Glass)</title>
+    <meta name="theme-color" content="#0b2a6f" />
+    <style>
+        /* -----------------------------------------------------
+            Mobil-only dizayn + iOS-style "Liquid Glass" effekti
+        ----------------------------------------------------- */
+        :root{
+            --brand:#0b2a6f;        
+            --brand-600:#0f3a95;
+            --brand-700:#082258;
+            --text:#e2e8f0;         /* Dark mode default */
+            --muted:#94a3b8;        
+            --bg:#0a0f1d;           
+            --card:rgba(255,255,255,.14); 
+            --glass-border:rgba(255,255,255,.25);
+            --ring:#3b82f6;
+            --success:#10b981;
+            --danger:#ef4444;
+            --warning:#f59e0b;
+            --radius:20px;
+            --shadow: 0 20px 60px rgba(0,0,0,.35);
+            --active-nav-color: #3b82f6; 
+        }
+        :root.light{
+            --text:#0f172a;
+            --muted:#475569;
+            --bg:#f7f9ff;
+            --card:rgba(255,255,255,.6);
+            --glass-border:rgba(148,163,184,.35);
+            --shadow: 0 20px 60px rgba(2,6,23,.10);
+            --active-nav-color: #0b2a6f;
+        }
+
+        /* Asosiy va Umumiy Stillar */
+        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        html,body{height:100%;}
+        body{
+            margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, Noto Sans;
+            background: var(--bg);
+            color:var(--text);
+            overflow-x:hidden;
+            transition: background-color .4s, color .4s;
+        }
+
+        /* Mobil-only guard */
+        #desktopBlock{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#0b1220;color:#fff;z-index:9999;padding:24px;text-align:center}
+        @media (min-width:641px){ #desktopBlock{display:flex} }
+
+        /* Safe area + viewport narrow container */
+        .app{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;overflow:hidden;}
+        .phone{width:100%;max-width:430px;margin-inline:auto; padding: env(safe-area-inset-top) 14px 100px; position: relative;}
+
+        /* Liquid background */
+        .liquid{position:fixed;inset:0;overflow:hidden;z-index:-1}
+        .blob{position:absolute;filter:blur(50px);opacity:.45;border-radius:50%}
+        .b1{width:420px;height:420px;left:-120px;top:-120px;background:radial-gradient(circle at 30% 30%, #1747c9, transparent 60%);animation:float 12s ease-in-out infinite}
+        .b2{width:520px;height:520px;right:-160px;top:20%;background:radial-gradient(circle at 70% 60%, #0b2a6f, transparent 60%);animation:float2 16s ease-in-out infinite}
+        .b3{width:480px;height:480px;left:-140px;bottom:-160px;background:radial-gradient(circle at 50% 50%, #2a6fff, transparent 60%);opacity:.35;animation:float3 18s ease-in-out infinite}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(20px)}}
+        @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-12px,12px)}}
+        @keyframes float3{0%,100%{transform:translate(0,0)}50%{transform:translate(16px,-10px)}}
+
+        /* Nav (Dynamic Island uslubida) */
+        .nav{position:sticky;top:0;z-index:50;margin:10px auto 8px;display:flex;gap:10px;align-items:center;justify-content:space-between;backdrop-filter:saturate(130%) blur(16px);-webkit-backdrop-filter:saturate(130%) blur(16px); background:var(--card); border:1px solid var(--glass-border); border-radius:18px; padding:10px 12px; box-shadow: var(--shadow)}
+        .brand{display:flex;align-items:center;gap:10px}
+        .badge{display:grid;place-items:center;width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#2048a9 0%,var(--brand) 100%);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+        .title{font-weight:900;font-size:16px;line-height:1}
+        .subtitle{font-size:11px;color:var(--muted)}
+        .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid var(--glass-border);font-size:11px}
+        
+        /* Tema o'zgartirish tugmasi CSS */
+        .switch-container {display: flex; align-items: center;}
+        .switch {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            background: rgba(255,255,255,.14);
+            border: 1px solid var(--glass-border);
+            border-radius: 999px;
+            width: 80px;
+            height: 36px;
+        }
+        .switch button {
+            background: none;
+            border: none;
+            color: var(--text);
+            width: 50%;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            z-index: 1;
+            cursor: pointer;
+            transition: color .4s;
+        }
+        .switch button:hover { opacity: .8; }
+        .switch .dot {
+            position: absolute;
+            left: 2px;
+            width: 36px;
+            height: 32px;
+            background: var(--brand); 
+            border-radius: 999px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+            transition: transform .3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        :root.light .switch .dot {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,.15);
+        }
+        :root.light .switch button { color: var(--text); }
+        .switch button:first-child { color: var(--muted); }
+        :root.light .switch button:last-child { color: var(--muted); }
+
+        /* Cards & Buttons */
+        .card{position:relative;background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:saturate(140%) blur(18px);-webkit-backdrop-filter:saturate(140%) blur(18px);overflow:hidden; transition: background-color .4s, border-color .4s}
+        .card::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(120% 120% at 0% 0%, rgba(255,255,255,.25), transparent 60%), radial-gradient(90% 90% at 100% 0%, rgba(255,255,255,.2), transparent 60%), radial-gradient(120% 120% at 100% 100%, rgba(255,255,255,.15), transparent 60%);mix-blend-overlay;opacity:.7;pointer-events:none}
+        .card .content{position:relative;z-index:1}
+        .p-16{padding:16px}.p-20{padding:20px}.p-24{padding:24px}
+        .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:14px;border:1px solid var(--glass-border); background:linear-gradient(135deg,#2048a9 0%,var(--brand) 100%);color:#fff;font-weight:700;box-shadow:0 8px 24px rgba(11,42,111,.35);cursor:pointer;transition:transform .08s ease, filter .2s ease}
+        .btn:active{transform:scale(.98)}
+        .btn-ghost{background:transparent;color:var(--text); box-shadow: none !important;}
+        .btn-ghost:active{background:rgba(255,255,255,.05);}
+
+        /* Savol tanlash tugmalari */
+        .choices .choice {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,.08);
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: background .15s, border-color .15s, transform .05s;
+        }
+        .choices .choice:hover { background: rgba(255,255,255,.15); }
+        .choices .choice:active { transform: scale(.99); }
+        .choices .choice .letter { transition: background .15s; }
+
+        /* Javob holatlari */
+        .choices .choice.correct {
+            background: rgba(16,185,129,.2); /* Success yashil fon */
+            border-color: var(--success);
+            color: var(--success);
+        }
+        .choices .choice.correct .letter {
+            background: var(--success);
+            color: #fff;
+        }
+        .choices .choice.wrong {
+            background: rgba(239,68,68,.2); /* Danger qizil fon */
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .choices .choice.wrong .letter {
+            background: var(--danger);
+            color: #fff;
+        }
+
+
+        /* -----------------------------------------------
+            SAHIFALAR O'TISH ANIMATSIYASI (SLIDE EFFECT)
+        ----------------------------------------------- */
+        .screens-container {
+            position: relative;
+            width: 100%;
+            max-width: 430px;
+            margin-inline: auto;
+            min-height: 500px; 
+            overflow: hidden; 
+        }
+        .screen {
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .4s ease-in-out, transform .4s ease-in-out;
+            padding-bottom: 30px; 
+        }
+        /* Kirib kelish */
+        .screen.active {
+            position: relative; 
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0) !important; 
+            z-index: 10;
+        }
+        
+        .screen.exit-left {
+            opacity: 0;
+            transform: translateX(-100%) !important;
+            z-index: 5;
+            position: absolute !important;
+        }
+        /* O'ngdan kirib kelish holati */
+        .screen:not(.active) {
+            transform: translateX(100%);
+            position: absolute;
+        }
+
+        /* -----------------------------------------------
+            PASTKI NAVIGATSIYA BAR
+        ----------------------------------------------- */
+        .bottom-nav-bar {
+            position: fixed; /* Joyida qotib turadi */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100; /* Boshqa kontent ustida bo'lishi uchun */
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .bottom-nav-inner {
+            padding: 0 14px;
+            max-width: 430px;
+            margin-inline: auto;
+        }
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 12px;
+            background: var(--card); 
+            border-top: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border-radius: 20px 20px 0 0; 
+            box-shadow: 0 -10px 30px rgba(0,0,0,.15);
+        }
+        .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            transition: color .2s, background .2s;
+        }
+        .bottom-nav a svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
+            transition: stroke .2s;
+        }
+        .bottom-nav a.active {
+            color: var(--active-nav-color);
+        }
+        .bottom-nav a.active svg {
+            stroke: var(--active-nav-color);
+        }
+        .bottom-nav a:not(.active):hover {
+            background: rgba(255,255,255,.05);
+            color: var(--text);
+        }
+        
+        /* O'rganish sahifasi uchun qo'shimcha stil */
+        .study-section {
+            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 20px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.1);
+        }
+        .study-section h3 {
+            margin-top: 0;
+            border-left: 4px solid var(--ring);
+            padding-left: 10px;
+        }
+        .study-section ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+        .study-section li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .study-section li::before {
+            content: '•';
+            color: var(--ring);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+            position: absolute;
+            left: 0;
+        }
+
+        .hidden{ display:none !important; }
+
+
+        /* ✅ Bosish faqat buttonning o‘zida ishlashi uchun */
+        .choices .choice * { pointer-events:none; }
+        .choices .choice { pointer-events:auto; }
+
+
+    </style>
+</head>
+<body>
+    <div id="desktopBlock"><div class="box">
+        <h2 style="margin:0 0 8px">Bu ilova mobil format uchun</h2>
+        <p style="opacity:.8">Iltimos, ilovani smartfoningizda oching. Hozircha desktop rejimi qo‘llab-quvvatlanmaydi.</p>
+    </div></div>
+
+    <div class="liquid" aria-hidden="true">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+    </div>
+
+    <div class="app">
+        <div class="phone">
+            <div class="nav">
+                <div class="brand">
+                    <div class="badge"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5a3 3 0 0 1 2.8-2h8.4a3 3 0 0 1 2.8 2l2 5"/><rect x="2" y="13" width="20" height="6" rx="2"/><circle cx="7" cy="17" r="1.5"/><circle cx="17" cy="17" r="1.5"/></svg></div>
+                    <div>
+                        <div class="title">Avto Maktab</div>
+                        <div class="subtitle">Avtonarx Bot — WebApp</div>
+                    </div>
+                </div>
+                <div class="switch-container">
+                    <div class="switch" aria-label="Tun/Tong">
+                        <button id="lightBtn" title="Tong"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2m-3.6-6.4l-1.4 1.4M6.4 17.6l-1.4 1.4m0-12.8 1.4 1.4m12.8 12.8-1.4-1.4"/></svg></button>
+                        <span class="dot" id="themeDot" aria-hidden="true"></span>
+                        <button id="darkBtn" title="Tun"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="screens-container">
+                <section id="start-screen" class="card p-24 screen active" data-index="0">
+                    <div class="content">
+                        <div class="chip" style="margin-bottom:8px">Imtihon rejimi</div>
+                        <h1 class="title-lg">Haydovchilik <span style="color:#2a6fff">Nazariy</span> Imtihoni</h1>
+                        <p class="muted" style="font-size:14px">Tayyorlanish uchun testni boshlang. Barcha natijalar "Hisobim" da saqlanadi. 🚗</p>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+                            <button id="startBtn" class="btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg> Testni Boshlash</button>
+                            <button id="goToHistoryBtn" class="btn btn-ghost"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M12 6v6h4"/></svg> Oxirgi natija</button>
+                        </div>
+                        <div id="lastResultSummary" class="card p-16" style="margin-top:20px; border-radius:14px; display:none">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">So'nggi test</h4>
+                            <p id="summaryText" class="muted" style="font-size:13px"></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="quiz-screen" class="screen" data-index="1" aria-live="polite">
+                    <div class="card p-16">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                            <div id="quizStatusChip" class="chip">Savol <span id="qIndex">1</span>/<span id="qTotal">20</span></div>
+                            <div class="chip" style="background:rgba(239,68,68,.14)">Xato: <span id="mistakes">0</span> / 3</div>
+                        </div>
+                        <div class="progress" style="margin-top:10px; height:10px; background:rgba(255,255,255,.14); border:1px solid var(--glass-border); border-radius:999px; overflow:hidden"><span id="bar" style="display:block;height:100%;width:0%;background:linear-gradient(90deg,#2a6fff,#0b2a6f);transition:width .4s ease"></span></div>
+                    </div>
+
+                    <div class="card p-24" style="margin-top:10px">
+                        <h2 id="qText" style="font-size:20px;margin:0 0 12px"></h2>
+                        <div id="choices" class="choices" style="display:grid;gap:10px"></div>
+                        <div id="rationale" class="rationale muted" style="margin-top:12px;display:none; border:1px dashed var(--glass-border);padding:12px;border-radius:12px;font-size:14px;background:rgba(255,255,255,.05)"></div>
+                    </div>
+                    
+                    <div class="footerBar" style="position:sticky;bottom:0;z-index:20;margin:10px auto 0;display:flex;gap:10px;align-items:center;justify-content:space-between;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:var(--card);border:1px solid var(--glass-border);border-radius:16px;padding:10px 12px;box-shadow: var(--shadow)">
+                        <button id="restartMid" class="btn btn-ghost"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg> Qayta boshlash</button>
+                        <div class="muted" style="font-size:12px">Tanlang va avtomatik o'ting</div>
+                    </div>
+                </section>
+
+                <section id="finish-screen" class="screen" data-index="2">
+                    <div class="card p-24">
+                        <div class="chip" style="margin-bottom:8px">Test yakunlandi</div>
+                        <div id="finishStatus" class="chip" style="font-weight:700"></div>
+                        <h3 id="score" style="font-size:24px;margin:10px 0 6px"></h3>
+                        <p class="muted" id="finishText" style="font-size:14px"></p>
+                        <p style="margin-top:15px; font-size:14px;">
+                            <b style="color:var(--ring)">Izoh va chuqur bilimlar</b> uchun har kuni test ishlab izohini olib o'rganib olsangiz bo'ladi! 👇
+                        </p>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+                            <a href="https://t.me/avtoelon_avtobozor" target="_blank" class="btn" style="background: linear-gradient(135deg, #0088cc 0%, #00a4ff 100%); border-color: #007bb6;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5L2 12l8 4 5 5 7-17z"/><path d="M10 16l4-4"/></svg> Telegram Kanal
+                            </a>
+                            <button id="restart" class="btn btn-ghost"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg> Asosiy menyu</button>
+                            <button id="goToReview" class="btn btn-ghost"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z"/><path d="M14 2v8h8"/></svg> Xatolarimni ko'rish</button>
+                        </div>
+                    </div>
+                    <div id="reviewListContainer" class="card p-24 hidden" style="margin-top:10px; max-height:50svh; overflow:auto">
+                        <h4 style="margin:0 0 8px;font-size:16px">Savollarga izohlar</h4>
+                        <div id="reviewList" style="display:grid;gap:10px"></div>
+                    </div>
+                </section>
+                
+                <section id="account-screen" class="screen" data-index="3">
+                    <h1 class="title-lg" style="font-size:24px">👤 Mening Hisobim</h1>
+                    <p class="muted" style="margin-bottom:15px; font-size:14px">Barcha ishlagan testlaringiz arxivi:</p>
+                    <div id="historyList" style="display:grid;gap:12px;">
+                        <p class="muted" style="text-align:center;">Tarix yuklanmoqda...</p>
+                    </div>
+                    <button id="clearHistoryBtn" class="btn btn-ghost" style="margin-top:20px; color:var(--danger); border-color:var(--danger); background:rgba(239,68,68,.1); display:block; width:100%;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18m-2 0l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m1 0V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>
+                        Barcha Tarixni Tozalash
+                    </button>
+                </section>
+                
+                <section id="study-screen" class="screen" data-index="4">
+                    <h1 class="title-lg" style="font-size:24px">📚 Yo'l Belgilari va Qoidalar</h1>
+                    <p class="muted" style="margin-bottom:20px; font-size:14px">Rasmiy O'zbekiston yo'l harakati qoidalari asosida asosiy kategoriyalar bo'yicha qisqacha ma'lumot:</p>
+
+                    <div class="study-section">
+                        <h3 style="color:var(--danger)">🔴 Ta'qiqlovchi Belgilar (Doiralar)</h3>
+                        <p class="muted">Ular har qanday harakatni, manevrni yoki tezlikni **cheklaydi yoki butunlay taqiqlaydi**. Ko'pincha qizil qirrali oq doiralar shaklida bo'ladi.</p>
+                        <ul>
+                            <li>**"Kirish Taqiqlangan" (3.1):** Belgining oldidan har qanday transport vositasining kirishi taqiqlanadi (faqat marshrut transportiga ruxsat).</li>
+                            <li>**"Harakat Taqiqlangan" (3.2):** Barcha transport vositalarining harakati taqiqlanadi (faqaat ayrim imtiyozli guruhlar bundan mustasno).</li>
+                            <li>**"To'xtash Taqiqlangan" (3.28) / "Turish Taqiqlangan" (3.27):** Qizil chiziqli ko'k doira (to'xtash) va ikki qizil chiziqli X ko'rinishida (turish) belgilanish joylarida to'xtash yoki turishni taqiqlaydi.</li>
+                            <li>**Tezlikni Cheklash (3.24):** Doiraning ichidagi raqam ko'rsatilgan tezlikdan yuqori harakatlanishni taqiqlaydi.</li>
+                        </ul>
+                    </div>
+
+                    <div class="study-section">
+                        <h3 style="color:var(--warning)">⚠️ Ogohlantiruvchi Belgilar (Uchburchaklar)</h3>
+                        <p class="muted">Haydovchini oldinda joylashgan **xavfli yo'l qismlariga** yaqinlashishidan ogohlantiradi va tezlikni pasaytirishni talab qiladi. Qizil qirrali oq/sariq uchburchak shaklida bo'ladi.</p>
+                        <ul>
+                            <li>**Xavfli Burilishlar (1.11, 1.12):** Oldinda o'tkir yoki ko'rinishi cheklangan burilishlar borligini bildiradi.</li>
+                            <li>**Nishablik (1.13, 1.14):** Tik ko'tarilish yoki tushish borligini ko'rsatadi, bu esa tormoz yo'lini va haydash uslubini o'zgartirishni talab qiladi.</li>
+                            <li>**Yovvoyi Hayvonlar (1.27):** Bu hududda yovvoyi hayvonlar yo'lga chiqishi mumkinligidan ogohlantiradi.</li>
+                            <li>**Piyodalar O'tish Joyi (1.22):** Tartibga solinmagan piyodalar o'tish joyi borligi haqida xabar beradi.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="study-section">
+                        <h3 style="color:var(--success)">✅ Imtiyoz Belgilari (Asosiy / Yo'l berish)</h3>
+                        <p class="muted">Ular chorrahalardan o'tish tartibini belgilaydi va yo'lda ustuvorlik huquqini beradi yoki bekor qiladi.</p>
+                        <ul>
+                            <li>**Asosiy yo'l (2.1):** Romb shaklida bo'lib, haydovchiga ustuvorlik huquqini beradi.</li>
+                            <li>**Yo'l bering (2.4):** Teskari uchburchak shaklida bo'lib, chorrahaga kirishdan oldin boshqa transportga yo'l berishni talab qiladi.</li>
+                            <li>**To'xtamasdan Harakatlanish Taqiqlangan (2.5):** Odatda temir yo'l kesishmasi oldida bo'lib, doimiy to'xtashni talab qiladi.</li>
+                        </ul>
+                    </div>
+                    
+                    <p class="muted" style="font-size:12px; margin-top:15px; text-align:center;">**Qoida:** Qizil belgilar **taqiqlaydi**, sariq uchburchaklar **ogohlantiradi**, ko'k belgilar esa **ko'rsatma beradi** yoki **ruxsat etadi** (yoki ma'lumot beradi).</p>
+                </section>
+
+                <section id="school-screen" class="screen" data-index="5">
+                    <h1 class="title-lg" style="font-size:24px">🏫 Avtomaktablar</h1>
+                    <p class="muted" style="margin-bottom:15px; font-size:14px">Viloyatlardagi faol avtomaktablar ro'yxati (Joylashuv + Kontakt):</p>
+                    <div id="schoolList" style="display:grid;gap:12px;">
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Toshkent (Markaz)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Chilonzor, 10-kvartal | Tel: +998 71 123 45 67</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Chilonzor+10-kvartal')">📍 Xaritada ko'rish</button>
+                        </div>
+                        <div class="school-item card p-16" style="border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
+                            <h4 style="margin:0 0 4px; color:var(--ring)">Samarqand (Qadim)</h4>
+                            <p class="muted" style="font-size:13px">Manzil: Registon ko'chasi, 5-uy | Tel: +998 66 789 01 23</p>
+                            <button class="btn" style="padding:8px 12px; font-size:13px; margin-top:10px" onclick="window.open('https://maps.google.com/?q=Registon+ko%27chasi+Samarqand')">📍 Xaritada ko'rish</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <footer style="padding: env(safe-area-inset-bottom) 0 30px; text-align:center">
+                <div class="muted" style="font-size:12px">Savollar: <a href="https://t.me/avtoelon_avtobozor" target="_blank" style="color:var(--ring); text-decoration:none;">@AvtonarxBot</a> | © <span id="year"></span> Avto Maktab</div>
+            </footer>
+        </div>
+    </div>
+    
+    <div class="bottom-nav-bar">
+        <div class="phone bottom-nav-inner">
+            <nav class="bottom-nav">
+                <a href="#start" class="nav-link active" data-target="start-screen" data-index="0">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span>Asosiy</span>
+                </a>
+                <a href="#study" class="nav-link" data-target="study-screen" data-index="4">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                    <span>O'rganish</span>
+                </a>
+                <a href="#account" class="nav-link" data-target="account-screen" data-index="3">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>Hisobim</span>
+                </a>
+                <a href="#schools" class="nav-link" data-target="school-screen" data-index="5">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7M5 10v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9"/><path d="M10 22v-4m4 4v-4"/></svg>
+                    <span>Maktablar</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        // --- Globallar va Elementlar ---
+        const root = document.documentElement;
+        const themeDot = document.getElementById('themeDot');
+        const lightBtn = document.getElementById('lightBtn');
+        const darkBtn  = document.getElementById('darkBtn');
+
+        const allScreens = document.querySelectorAll('.screen');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        const qIndexEl = document.getElementById('qIndex');
+        const mistakesEl = document.getElementById('mistakes');
+        const barEl = document.getElementById('bar');
+        const qTextEl = document.getElementById('qText');
+        const choicesEl = document.getElementById('choices');
+        const rationaleEl = document.getElementById('rationale');
+
+        const reviewListContainer = document.getElementById('reviewListContainer');
+        const reviewList = document.getElementById('reviewList');
+        const lastResultSummary = document.getElementById('lastResultSummary');
+        const summaryText = document.getElementById('summaryText');
+
+        const historyList = document.getElementById('historyList');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        
+        let currentActiveScreenId = 'start-screen';
+        let currentScreenIndex = 0; 
+        
+        // --- Imtihon shartlari ---
+        const TOTAL_QUESTIONS = 20;
+        const PASS_SCORE = 17; // Minimal 17 ta to'g'ri javob kerak
+        const MAX_MISTAKES = 3; // Maksimal 3 ta xato
+
+        // Savollar bazasi (Rasmsiz variant)
+        const originalQuestions = [
+            { id:1, text:"Qaysi belgi transport vositasining 'Asosiy yo'l'da ekanligini bildiradi?", choices:["Uchburchak","Kvadrant","Romb","Sakkizburchak"], correctIndex:2, rationale:"Romb shaklidagi belgi asosiy yo'lni bildiradi.", image: null },
+            { id:2, text:"Oq uzluksiz chiziqning ma'nosi?", choices:["Qaytish yo'lagi","Kesib o'tish taqiqlangan bo'luvchi chiziq","Velosiped yo'lagi","Faqat to'xtash joyi"], correctIndex:1, rationale:"Uzluksiz chiziqni kesish va undan o'tish qat'iyan taqiqlanadi. Bu xavfsizlikni ta'minlash uchun qilinadi.", image: null },
+            { id:3, text:"Uzoq chiroqlar qachon yaqin chiroqqa almashtirilishi shart?", choices:["Faqat avtobusni ko'rganda","150 metrdan yaqinroqda kelayotgan transport bo'lsa","Piyoda ko'rsangiz","Har doim yomg'irda"], correctIndex:1, rationale:"Qarama-qarshi transportni ko'zlari qamashtirmaslik uchun 150 metrdan yaqinda almashtirilishi kerak.", image: null },
+            { id:4, text:"Haydovchi xavfsizlik kamarini taqishi qachon shart?", choices:["Har qanday tezlikda shart","40 km/soat ostida shart emas","Faqat magistralda","Faqat yuk mashinasida"], correctIndex:0, rationale:"Avtomobil harakatlanayotganida har doim taqiladi, bu haydovchining va yo'lovchining xavfsizligini ta'minlaydi.", image: null },
+            { id:5, text:"Tirkama tortishda tormoz yo'li qanday o'zgaradi?", choices:["Tormoz yo'li uzayadi","Tormoz yo'li qisqaradi","O'zgarmaydi","Faqat burilish radiusi o'zgaradi"], correctIndex:0, rationale:"Tirkama og'irlikni oshiradi, bu esa inersiya kuchini oshirib, tormoz masofasini uzaytiradi.", image: null },
+            { id:6, text:"Kirish taqiqlangan belgisining ko'rinishi qanday?", choices:["Qizil romb","Qizil halqali oq doira","Qora chiziqli sariq uchburchak","Oq doira ichida qizil gorizontal chiziq"], correctIndex:3, rationale:"3.1. 'Kirish taqiqlangan' belgisi oq doira ichidagi qizil gorizontal chiziqdan iborat.", image: null },
+            { id:7, text:"Yog'ingarchilikda (yomg'ir/qor) to'xtash masofasi?", choices:["O'zgarmaydi","Qisqaradi","Uzayadi","Faqat old g'ildirak yopishadi"], correctIndex:2, rationale:"Yo'l yuzasi sirpanchiq bo'lgani uchun g'ildiraklar yopishishini yo'qotadi va tormoz masofasi uzayadi.", image: null },
+            { id:8, text:"ABS tizimi nima vazifani bajaradi?", choices:["Tezlikni oshiradi","Tormozlashda g'ildirak bloklanishini oldini oladi","Yonilg'i kamaytiradi","Mashina burilishini tezlashtiradi"], correctIndex:1, rationale:"ABS (Anti-lock Braking System) favqulodda tormozlashda rul boshqaruvini saqlab qolish uchun g'ildiraklar bloklanishini oldini oladi.", image: null },
+            { id:9, text:"Tartibga solinmagan piyodalar o'tish joyida kim ustuvorlikka ega?", choices:["Avtomobil","Velosipedchi","Piyoda","Avtobus"], correctIndex:2, rationale:"Piyodalar o'tish joyida doimo piyoda ustuvorlikka ega.", image: null },
+            { id:10, text:"Haydash paytida mobil telefondan gaplashish mumkinmi?", choices:["Hech qachon","Faqat tunda","Bluetooth/garnitura orqali mumkin","Har doim qo'lda ushlab"], correctIndex:2, rationale:"Qo'llarsiz rejimda (Hands-free) ruxsat beriladi, chunki e'tiborni yo'ldan chalg'itmaslik kerak.", image: null },
+            // Qo'shimcha 10 ta savol
+            { id:11, text: "Chorrahalarda burilish signali (povorotnik) qachon yoqilishi kerak?", choices: ["Faqat burilish paytida","Manevr boshlashdan oldin","Faqat tunda","Kerak emas"], correctIndex:1, rationale: "Manevr boshlashdan yetarli masofa oldin boshqa haydovchilarni ogohlantirish uchun yoqilishi shart.", image: null },
+            { id:12, text: "Yashil svetafor yonib turganida haydovchi qachon to'xtashi kerak?", choices: ["Har doim","Yo'l berish kerak bo'lsa","Chorrahada tirbandlik hosil bo'lsa","Hech qachon"], correctIndex:2, rationale: "Agar chorrahaning narigi tomonida tirbandlik bo'lsa va bu boshqa yo'nalishdagi harakatga xalaqit bersa, to'xtash kerak.", image: null },
+            { id:13, text: "Avariya (avtohalokat) sodir bo'lganda birinchi navbatda nima qilish kerak?", choices: ["Sug'urta kompaniyasiga qo'ng'iroq qilish","Avtomobillarni yo'l chetiga olib qo'yish","Avariya ishoralarini o'rnatish va 'avariyka' yoqish","Politsiyani kutish"], correctIndex:2, rationale: "Birinchi navbatda xavfsizlikni ta'minlash uchun 'avariyka' yoqiladi va avariya ishoralari o'rnatiladi.", image: null },
+            { id:14, text: "Maktab avtobusi to'xtaganida uning yonidan o'tayotgan transport tezligi qanday bo'lishi kerak?", choices: ["70 km/s dan oshmasligi kerak","50 km/s dan oshmasligi kerak","Faqaat 20 km/s dan oshmasligi kerak","Tezlik cheklanmagan"], correctIndex:2, rationale: "Bolalar yo'lga chiqishi mumkinligi sababli, 20 km/soatdan oshmasligi qat'iyan talab qilinadi.", image: null },
+            { id:15, text: "Asosiy yo'l belgisi qanday shaklda bo'ladi?", choices: ["Uchburchak","Oq romb sarg'ish rangda","Ko'k kvadrat","Qizil doira"], correctIndex:1, rationale: "Asosiy yo'l belgisi sarg'ish rangli ichi oq romb shaklida bo'ladi.", image: null },
+            { id:16, text: "YSHQ bo'yicha eng yaqin joylashgan to'xtash joyi belgisi qanday rangda bo'ladi?", choices: ["Yashil","Ko'k","Qizil","Sariq"], correctIndex:1, rationale: "Ko'k kvadrat fonli belgilar ko'rsatma beruvchi belgilar hisoblanadi (5.15 'To'xtash joyi' kabi).", image: null },
+            { id:17, text: "Tuman chiroqlari (protivotumanka) qachon yoqilishi mumkin?", choices: ["Faqat tunda","Faqat yomg'irda","Tuman, kuchli yog'ingarchilik yoki cheklangan ko'rinish sharoitida","Har doim"], correctIndex:2, rationale: "Tuman chiroqlari ko'rinish cheklanganida yordamchi yorug'lik sifatida ishlatiladi.", image: null },
+            { id:18, text: "Haydovchi qachon yo'lovchilarni tashishni boshlashi mumkin?", choices: ["Har qanday vaziyatda","Faqat avtomobil to'liq to'xtaganida","Mashina 10 km/soat tezlikda harakatlansa","Agar old eshik bo'lsa"], correctIndex:1, rationale: "Yo'lovchilarni tushirish/chiqarish faqat avtomobil to'liq to'xtaganidan keyin amalga oshirilishi kerak.", image: null },
+            { id:19, text: "Yo'l harakati qoidalarida tezlikni cheklovchi belgilarning amal qilish zonasi qayerda tugaydi?", choices: ["Faqat keyingi chorrahada","'Barcha cheklovlar zonasining tugashi' belgisi o'rnatilganda","Aholi punktidan chiqishda","Yuqoridagi barchasi"], correctIndex:3, rationale: "Cheklov amal qilish zonasi keyingi chorrahada, maxsus bekor qilish belgisi o'rnatilganda yoki aholi punktidan chiqish joyida tugaydi.", image: null },
+            { id:20, text: "Boshqa transportni quvib o'tish qachon taqiqlanadi?", choices: ["Faqat tunda","Piyodalar o'tish joyida","Asosiy yo'lda bo'lsa","Tezlik 100 km/soat bo'lsa"], correctIndex:1, rationale: "Piyodalar xavfsizligini ta'minlash maqsadida piyodalar o'tish joyida quvib o'tish qat'iyan taqiqlanadi.", image: null },
+        ];
+
+
+        let QUESTIONS = [...originalQuestions]; 
+        let current = 0;
+        let answers = [];
+        let mistakes = 0;
+        let finished = false;
+
+        // --- Mantiqiy Funksiyalar ---
+        function show(el){el.classList.remove('hidden')}
+        function hide(el){el.classList.add('hidden')}
+
+        function updateProgress(){ 
+            barEl.style.width = Math.round(((current+1)/QUESTIONS.length)*100)+'%'; 
+            qIndexEl.textContent = String(current+1);
+            
+            const statusText = finished ? 'Yakunlandi' : `${current+1} / 20 savol`;
+            document.getElementById('quizStatusChip').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8h.01M11 12h2v4h-2z"/></svg> ${statusText}`;
+        }
+        
+        function switchScreen(targetId, targetIndex = 0) {
+            const currentScreen = document.getElementById(currentActiveScreenId);
+            const targetScreen = document.getElementById(targetId);
+            const targetScreenIndex = parseInt(targetScreen.dataset.index);
+            
+            if (currentScreen === targetScreen) return; 
+
+            currentScreen.classList.remove('active');
+            
+            if (targetScreenIndex > currentScreenIndex) {
+                 currentScreen.classList.add('exit-left');
+                 currentScreen.style.transform = 'translateX(-100%)'; 
+                 targetScreen.style.transform = 'translateX(100%)'; 
+            } else {
+                 currentScreen.style.transform = 'translateX(100%)'; 
+                 currentScreen.classList.remove('exit-left');
+                 targetScreen.style.transform = 'translateX(-100%)'; 
+            }
+            currentScreen.style.position = 'absolute';
+                        
+            setTimeout(() => {
+                // eski animatsiya klaslarini tozalaymiz
+                targetScreen.classList.remove('exit-left');
+                currentScreen.classList.remove('exit-left');
+
+                targetScreen.classList.add('active');
+                targetScreen.style.position = 'relative';
+
+                if (targetId === 'quiz-screen' && !finished) {
+                    renderQuestion();
+                }
+            }, 200);
+
+            
+            currentActiveScreenId = targetId;
+            currentScreenIndex = targetScreenIndex;
+
+            navLinks.forEach(link => link.classList.remove('active'));
+            const activeLink = document.querySelector(`.nav-link[data-target="${targetId}"]`);
+            if (activeLink) activeLink.classList.add('active');
+
+            if (targetId === 'account-screen') {
+                loadHistory();
+            } else if (targetId === 'start-screen') {
+                displayLastResultSummary();
+                updateProgress(); 
+            }
+        }
+
+        // --- Testni Boshlash va Savolni Renderlash ---
+        function resetAll(){ 
+            current=0; answers=[]; mistakes=0; finished=false; 
+            mistakesEl.textContent='0'; 
+            reviewListContainer.classList.add('hidden');
+            
+            QUESTIONS = [...originalQuestions].sort(() => Math.random() - 0.5); 
+            
+            updateProgress(); 
+            renderQuestion(); 
+            switchScreen('quiz-screen', 1); 
+        }
+
+        function renderQuestion(){
+            choicesEl.style.pointerEvents = 'auto';
+            const q = QUESTIONS[current];
+            qTextEl.textContent = q.text;
+            rationaleEl.style.display = 'none';
+            
+            choicesEl.innerHTML = '';
+            
+            q.choices.forEach((txt, i)=>{
+                const btn = document.createElement('button');
+                btn.className = 'choice';
+                btn.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div class="letter" style="display:grid;place-items:center;width:36px;height:36px;border-radius:12px;font-weight:800; color:var(--text); border:1px solid var(--glass-border);">${String.fromCharCode(65+i)}</div>
+                        <div>${txt}</div>
+                    </div>
+                    <div class="muted check-icon" style="opacity:.8; display:none;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                    </div>`;
+                btn.addEventListener('click',()=>handleAnswer(i, btn));
+                choicesEl.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(choiceIndex){
+            if (finished) return;
+
+            const q = QUESTIONS[current];
+            const correct = choiceIndex === q.correctIndex;
+
+            // Variantlarni bloklash
+            choicesEl.querySelectorAll('.choice').forEach(b => {
+                b.style.pointerEvents = 'none';
+            });
+
+            answers.push({
+                qId: q.id,
+                qText: q.text,
+                selected: q.choices[choiceIndex],
+                correct: q.choices[q.correctIndex],
+                isCorrect: correct,
+                rationale: q.rationale || 'Izoh berilmagan.',
+                image: q.image || null
+            });
+
+            const nodes = Array.from(choicesEl.children);
+            nodes.forEach((n, i) => {
+                const checkIcon = n.querySelector('.check-icon');
+                if (i === q.correctIndex) {
+                    n.classList.add('correct');
+                    checkIcon.style.display = 'block';
+                }
+                if (i === choiceIndex && !correct) {
+                    n.classList.add('wrong');
+                    checkIcon.style.display = 'block';
+                    if ("vibrate" in navigator) navigator.vibrate(200);
+                }
+            });
+
+            rationaleEl.textContent = q.rationale || 'Izoh topilmadi.';
+            rationaleEl.style.display = 'block';
+
+            if (!correct) {
+                mistakes++;
+                mistakesEl.textContent = String(mistakes);
+            }
+
+            // ✅ Keyingi savolga xavfsiz o‘tish
+            setTimeout(() => {
+                const next = current + 1;
+
+                if (mistakes >= MAX_MISTAKES) {
+                    onFinish(true);
+                    return;
+                }
+
+                if (next >= QUESTIONS.length) {
+                    onFinish(false);
+                    return;
+                }
+
+                current = next;
+                updateProgress();
+                renderQuestion();
+
+            }, 1000);
+        }
+
+
+
+        function onFinish(failedByMistakes){
+            finished = true; 
+            updateProgress(); 
+            
+            const correctCount = answers.filter(a => a.isCorrect).length;
+            const finalPassed = correctCount >= PASS_SCORE && !failedByMistakes;
+
+            saveHistory(correctCount, mistakes, QUESTIONS.length, !finalPassed, answers);
+
+            const finishStatusEl = document.getElementById('finishStatus');
+            const scoreEl = document.getElementById('score');
+            const finishTextEl = document.getElementById('finishText');
+
+            if(finalPassed){
+                finishStatusEl.innerHTML = `<span style="color:var(--success)">🏆</span> Tabriklaymiz! Imtihondan o'tdingiz!`;
+                finishStatusEl.style.background = 'rgba(16,185,129,.14)';
+                scoreEl.textContent = `Natija: ${correctCount} / ${QUESTIONS.length}`;
+                finishTextEl.textContent = 'Ajoyib natija! Haydash ko\'nikmalarida ham shu kabi ustunlik tilaymiz.';
+            } else if (failedByMistakes) {
+                finishStatusEl.innerHTML = `<span style="color:var(--danger)">✖</span> Afsus! Xato limiti (${MAX_MISTAKES}) oshirildi.`;
+                finishStatusEl.style.background = 'rgba(239,68,68,.14)';
+                scoreEl.textContent = `Natija: ${correctCount} / ${QUESTIONS.length}`;
+                finishTextEl.textContent = `${mistakes} ta xatoga yetildi. Keyingi urinishda qoidalarni yanada puxta o'rganing!`;
+            } else { // 17 tadan kam to'g'ri, lekin xato limiti oshirilmagan
+                finishStatusEl.innerHTML = `<span style="color:var(--danger)">✖</span> Afsus! Testdan o'ta olmadingiz.`;
+                finishStatusEl.style.background = 'rgba(239,68,68,.14)';
+                scoreEl.textContent = `Natija: ${correctCount} / ${QUESTIONS.length}`;
+                finishTextEl.textContent = `Imtihon shartini bajarish uchun kamida ${PASS_SCORE} ta to'g'ri javob kerak edi. Yaxshi tayyorlaning.`;
+            }
+            
+            reviewList.innerHTML = ''; 
+            switchScreen('finish-screen', 2);
+        }
+        
+        // --- History Mantiqi ---
+        function getHistory() {
+            try { 
+                const data = localStorage.getItem('avtoMaktabHistory');
+                return JSON.parse(data) || []; 
+            } catch(e) { 
+                return []; 
+            }
+        }
+
+        function saveHistory(correct, wrong, total, failed, details) {
+            const history = getHistory();
+            const passed = correct >= PASS_SCORE && wrong < MAX_MISTAKES;
+            history.unshift({
+                date: new Date().toLocaleString('uz-UZ', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
+                correct: correct,
+                wrong: wrong,
+                total: total,
+                passed: passed, 
+                details: details 
+            });
+            try {
+                localStorage.setItem('avtoMaktabHistory', JSON.stringify(history.slice(0, 20))); 
+            } catch(e) {}
+        }
+
+        function clearHistory() {
+            if (confirm("Haqiqatdan ham barcha test natijalarini tozalashni xohlaysizmi? Bu amalni qaytarib bo'lmaydi.")) {
+                try {
+                    localStorage.removeItem('avtoMaktabHistory');
+                    loadHistory(); 
+                    displayLastResultSummary(); 
+                    alert("Testlar tarixi muvaffaqiyatli tozalandi.");
+                } catch(e) {
+                    alert("Tarixni tozalashda xato yuz berdi.");
+                }
+            }
+        }
+
+
+        function loadHistory() {
+            const history = getHistory();
+            historyList.innerHTML = '';
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="muted" style="text-align:center; margin-top:20px;">Siz hali test ishlamadingiz.</p>';
+                return;
+            }
+
+            history.forEach((item, index) => {
+                const status = item.passed ? '🏆 Oʻtdi' : (item.wrong >= MAX_MISTAKES ? '❌ Xato Limiti' : '❌ Oʻta Ol.mas');
+                const statusColor = item.passed ? 'var(--success)' : 'var(--danger)';
+
+                const itemEl = document.createElement('div');
+                itemEl.className = 'history-item card p-16';
+                itemEl.dataset.index = index;
+
+                itemEl.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:700;">${item.date}</span>
+                        <span style="color:${statusColor}; font-weight:700;">${status}</span>
+                    </div>
+                    <p class="muted" style="font-size:14px; margin-top:5px;">
+                        Toʻgʻri: <span style="color:var(--success)">${item.correct}</span> / 
+                        Xato: <span style="color:var(--danger)">${item.wrong}</span> / 
+                        Jami: ${item.total} savol
+                    </p>
+                    <div id="detail-${index}" class="history-detail-review hidden"></div>
+                `;
+
+                itemEl.addEventListener('click', () => toggleHistoryDetails(item, index));
+                historyList.appendChild(itemEl);
+            });
+        }
+        
+        function toggleHistoryDetails(item, index) {
+            const detailEl = document.getElementById(`detail-${index}`);
+            const isHidden = detailEl.classList.contains('hidden');
+            
+            document.querySelectorAll('.history-detail-review').forEach(el => el.classList.add('hidden'));
+
+            if (isHidden) {
+                detailEl.classList.remove('hidden');
+                detailEl.innerHTML = item.details.map((d, i) => `
+                    <div class="history-detail-item" style="margin-top: 8px; display: flex; align-items: flex-start; gap: 8px; color: ${d.isCorrect ? 'var(--success)' : 'var(--danger)'};">
+                        <span style="min-width: 20px;">${d.isCorrect ? '✅' : '❌'}</span>
+                        <div>
+                            <span style="font-weight:600; color:var(--text);">${i+1}. ${d.qText}</span>
+                            <div class="muted" style="font-size:12px;">
+                                Javobingiz: <span style="font-weight:bold; color:var(--danger)">${d.selected}</span> 
+                                ${!d.isCorrect ? `<span style="margin-left:8px; color:var(--success)">(Tog'risi: ${d.correct})</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                detailEl.classList.add('hidden');
+            }
+        }
+        
+        function displayLastResultSummary() {
+            const history = getHistory();
+            if (history.length === 0) {
+                 hide(lastResultSummary);
+                 return;
+            }
+            const lastTest = history[0];
+            let statusText = lastTest.passed ? "🏆 Muvaffaqiyatli o'tdingiz!" : "❌ O'ta olmadingiz.";
+            
+            summaryText.innerHTML = `${statusText} | Natija: <span style="color:var(--success)">${lastTest.correct}</span> to'g'ri, <span style="color:var(--danger)">${lastTest.wrong}</span> xato.`;
+            show(lastResultSummary);
+        }
+
+
+        // --- Eventlar ---
+        document.getElementById('startBtn').addEventListener('click', resetAll);
+        document.getElementById('restart').addEventListener('click', ()=>{ switchScreen('start-screen', 0); });
+        document.getElementById('goToHistoryBtn').addEventListener('click', ()=>{ switchScreen('account-screen', 3); });
+        clearHistoryBtn.addEventListener('click', clearHistory);
+        
+        document.getElementById('restartMid').addEventListener('click', ()=>{
+             if(confirm("Testni noldan boshlashni xohlaysizmi? Hozirgi natija saqlanmaydi.")) {
+                resetAll();
+             }
+        });
+        
+        document.getElementById('goToReview').addEventListener('click', ()=>{ 
+            reviewListContainer.classList.toggle('hidden');
+            if(!reviewListContainer.classList.contains('hidden') && reviewList.innerHTML === '') {
+                reviewList.innerHTML = answers.map((a, i) => `
+                    <div class="card p-16" style="border-color:${a.isCorrect ? 'rgba(16,185,129,.5)' : 'rgba(239,68,68,.5)'}; background:${a.isCorrect ? 'rgba(16,185,129,.10)' : 'rgba(239,68,68,.10)'}">
+                        <div style="font-weight:700; color:var(--text); margin-bottom:4px;">
+                            ${i+1}. ${a.qText}
+                        </div>
+                        <div class="muted" style="font-size:13px; line-height:1.4;">
+                            Sizning javobingiz: <span style="font-weight:bold; color:var(--danger)">${a.selected}</span><br>
+                            To'g'ri javob: <span style="font-weight:bold; color:var(--success)">${a.correct}</span>
+                            <div class="rationale" style="margin-top:8px; border:1px dashed var(--glass-border);padding:12px;border-radius:12px;font-size:14px;background:rgba(255,255,255,.05)">${a.rationale}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.dataset.target;
+                const targetIndex = parseInt(link.dataset.index);
+                switchScreen(targetId, targetIndex);
+            });
+        });
+
+        // --- Tema funksiyasi (Tun/Tong rejimi) ---
+        function setTheme(mode){
+          if(mode==='light'){
+            root.classList.add('light');
+            themeDot.style.transform = 'translateX(38px)';
+            lightBtn.style.color = 'var(--active-nav-color)';
+            darkBtn.style.color = 'var(--muted)';
+          } else {
+            root.classList.remove('light');
+            themeDot.style.transform = 'translateX(0)';
+            darkBtn.style.color = 'var(--active-nav-color)';
+            lightBtn.style.color = 'var(--muted)';
+          }
+          try{localStorage.setItem('theme2', mode);}catch(e){}
+        }
+
+        const initialTheme = (function(){
+          try{ return localStorage.getItem('theme2') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light':'dark'); }catch(e){return 'dark'}
+        })();
+        setTheme(initialTheme);
+        
+        lightBtn.addEventListener('click',()=>setTheme('light'));
+        darkBtn.addEventListener('click',()=>setTheme('dark'));
+        
+        // --- Boshlang'ich Holatni Sozlash ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('year').textContent = new Date().getFullYear();
+            const startScreen = document.getElementById('start-screen');
+            startScreen.classList.add('active');
+            startScreen.style.position = 'relative';
+            startScreen.style.transform = 'translateX(0)';
+            currentActiveScreenId = 'start-screen';
+            currentScreenIndex = 0;
+
+            const qTotalEl = document.getElementById('qTotal');
+            if (qTotalEl) qTotalEl.textContent = String(TOTAL_QUESTIONS);
+            displayLastResultSummary();
+        });
+        
+    </script>
+</body>
+</html>
